@@ -1,0 +1,14 @@
+default:
+	just --list
+
+alias r := run
+alias t := test
+
+run:
+  ./gradlew run
+
+test:
+  ./gradlew test
+
+report:
+	open file:///Users/liam/src/mcgill/COMP250/exercises/app/build/reports/tests/test/index.html
