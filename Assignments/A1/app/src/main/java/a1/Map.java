@@ -1,4 +1,5 @@
-package java;
+package a1;
+
 /*
  * Map class that generates the layout
  * Author: Lancer Guo
