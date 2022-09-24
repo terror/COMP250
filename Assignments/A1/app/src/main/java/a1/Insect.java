@@ -7,6 +7,7 @@ public abstract class Insect {
   public Insect(Tile tile, int healthPoints) {
     this.tile = tile;
     this.healthPoints = healthPoints;
+    if (!tile.addInsect(this)) throw new IllegalArgumentException();
   }
 
   public final Tile getPosition() {
@@ -19,5 +20,21 @@ public abstract class Insect {
 
   public void setPosition(Tile tile) {
     this.tile = tile;
+  }
+
+  public void takeDamage(int damage) {
+    healthPoints -= this instanceof HoneyBee && tile.isHive() ? damage * 0.10 : damage;
+    if (healthPoints <= 0) tile.removeInsect(this);
+  }
+
+  public abstract boolean takeAction();
+
+  @Override
+  public boolean equals(Object object) {
+    if (object == this) return true;
+    if (!(object instanceof Insect)) return false;
+    Insect insect = (Insect) object;
+    if (insect.healthPoints != healthPoints || insect.tile != tile) return false;
+    return true;
   }
 }
