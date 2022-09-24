@@ -1,7 +1,5 @@
 package a1;
 
-import a1.Insect;
-
 public abstract class HoneyBee extends Insect {
   private int cost;
 

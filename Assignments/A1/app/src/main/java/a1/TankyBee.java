@@ -1,7 +1,5 @@
 package a1;
 
-import a1.HoneyBee;
-
 public class TankyBee extends HoneyBee {
   private int attackDamage;
   private int armor;

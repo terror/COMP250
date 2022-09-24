@@ -1,5 +1,3 @@
 package a1;
 
-public class Tile {
-
-}
+public class Tile {}

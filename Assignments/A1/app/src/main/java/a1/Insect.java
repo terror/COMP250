@@ -1,7 +1,5 @@
 package a1;
 
-import a1.Tile;
-
 public abstract class Insect {
   private Tile tile;
   private int healthPoints;
