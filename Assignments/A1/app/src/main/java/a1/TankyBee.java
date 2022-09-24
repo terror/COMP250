@@ -4,14 +4,41 @@ public class TankyBee extends HoneyBee {
   private int attackDamage;
   private int armor;
 
+  /**
+   * A constructor for a `TankyBee` instance.
+   *
+   * @return A new `TankyBee` instance with specified fields.
+   */
   public TankyBee(Tile tile, int attackDamage, int armor) {
     super(tile, 30, 3);
     this.attackDamage = attackDamage;
     this.armor = armor;
   }
 
+  /**
+   * Attempt to sting a hornet on the same tile as this bee.
+   *
+   * @return Whether or not we stung a hornet on the same tile.
+   */
   public boolean takeAction() {
-    return false;
+    Hornet candidate = getPosition().getHornet();
+
+    if (candidate == null) {
+      return false;
+    }
+
+    candidate.takeDamage(attackDamage);
+
+    return true;
+  }
+
+  /**
+   * Take damage accounting for the fact that this bee is special and has armor.
+   *
+   * @param damage The amount of damage to be taken.
+   */
+  public void takeDamage(int damage) {
+    super.takeDamage(damage * (100 / (100 + armor)));
   }
 
   @Override
@@ -19,11 +46,10 @@ public class TankyBee extends HoneyBee {
     if (object == this) return true;
     if (!(object instanceof TankyBee)) return false;
     TankyBee bee = (TankyBee) object;
-    if (bee.getHealth() != getHealth()
-        || bee.getPosition() != getPosition()
-        || bee.getCost() != getCost()
-        || bee.attackDamage != attackDamage
-        || bee.armor != armor) return false;
-    return true;
+    return (bee.getHealth() == getHealth()
+        && bee.getPosition().equals(getPosition())
+        && bee.getCost() == getCost()
+        && bee.attackDamage == attackDamage
+        && bee.armor == armor);
   }
 }

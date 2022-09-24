@@ -18,27 +18,20 @@ enum EnumBeeType {
 }
 
 public class BeeColony extends Frame {
-
   private static final int RES_X = 900;
   private static final int RES_Y = 600;
-
   private static final int BUSYBEE_COST = 2;
   private static final int ANGRYBEE_COST = 1;
   private static final int TANKYBEE_COST = 3;
-
   private static final int ANGRYBEE_ATTACK = 1;
   private static final int TANKYBEE_ATTACK = 1;
   private static final int TANKYBEE_ARMOR = 1;
-
   private static final int HORNET_ATTACK = 1;
   private static final int HORNET_HEALTH = 5;
-
   static final int STARTING_FOOD = 5;
   static final int FOOD_PER_TURN = 1;
-
   private boolean _inSelection = false;
   private EnumBeeType _selectedBeeType;
-
   private int canvasX;
   private int canvasY;
   private int canvasWidth;
@@ -54,13 +47,10 @@ public class BeeColony extends Frame {
   private static Button startBtn;
   private static Button endBtn;
   private static Button spawnBtn;
-
   private long _frameCount;
-  private int _timePerFrame = 5000; // 5 seconds per frame, increase to slow down the game
+  private int _timePerFrame = 5000;
   private boolean _gameOver;
-
   private int _totalFood;
-
   private LinkedList<Insect> deadInsects;
   private static Map map;
   private static LinkedList<Hornet> hornets;
@@ -72,12 +62,9 @@ public class BeeColony extends Frame {
     initGame();
   }
 
-  /*************************** Main ***************************/
   public static void main(String args[]) {
     BeeColony game = new BeeColony();
   }
-
-  /****************** Game Logic ******************/
 
   private void initMap() {
     map = new Map(canvasWidth, canvasHeight);
@@ -93,11 +80,9 @@ public class BeeColony extends Frame {
     _frameCount = 0;
     _gameOver = true;
 
-    // update and show food
     _totalFood = STARTING_FOOD;
     UpdateFood(0);
 
-    // disable and enable UI
     busyBeeBtn.setEnabled(false);
     angryBeeBtn.setEnabled(false);
     tankyBeeBtn.setEnabled(false);
@@ -133,6 +118,7 @@ public class BeeColony extends Frame {
                 render();
               }
             });
+
     tick.start();
   }
 
@@ -148,25 +134,19 @@ public class BeeColony extends Frame {
     toggleInput(false);
   }
 
-  // spawn one hornet
   private void spawnHornet() {
-    // spawn hornets at the nest
     hornets.add(new Hornet(map.getNestTile(), HORNET_HEALTH, HORNET_ATTACK));
     logMessage("New hornet is spawned!\n");
   }
 
-  // game logic
   private void simulate() {
-    // TODO: simulate the map based on the rule and update map
     logMessage("\n************* Turn " + _frameCount + " *************\n");
 
-    // for each bees, do actions
     logMessage("Bees start taking actions!\n");
     for (HoneyBee bee : bees) {
       bee.takeAction();
     }
 
-    // update food
     int foodFromBee = 0;
     for (Tile tile : map.getAllPath()) {
       foodFromBee += tile.collectFood();
@@ -175,13 +155,11 @@ public class BeeColony extends Frame {
     logMessage("Bees collected " + food + " food!\n");
     UpdateFood(food);
 
-    // for each hornets, do actions
     logMessage("Hornets start taking actions!\n");
     for (Hornet hornet : hornets) {
       hornet.takeAction();
     }
 
-    // collect dead insects
     collectDeadInsects();
 
     UpdateLog();
@@ -284,30 +262,22 @@ public class BeeColony extends Frame {
     collectDeadInsects();
   }
 
-  /**************************** Interface *************************/
-
   public boolean isGameOver() {
     return _gameOver;
   }
 
-  // This method is used to log message to panel
   public static void logMessage(String s) {
     logBuffer.append(s);
     UpdateLog();
   }
 
-  // This method is necessary to let the game know if any insect is dead
   public static void notifyDeath(Insect insect) {
     if (insect instanceof HoneyBee) {
       bees.remove(insect);
-      // System.out.println("remove bee");
     } else {
       hornets.remove(insect);
-      // System.out.println("remove hornet");
     }
   }
-
-  /************************** UI control *********************/
 
   public void initUI() {
     _msgPanel = new Label();
@@ -318,7 +288,6 @@ public class BeeColony extends Frame {
     _foodPanel.setBounds(RES_X - 100, 30, 100, 20);
     _foodPanel.setAlignment(1);
 
-    // close window on button click
     addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
@@ -327,7 +296,6 @@ public class BeeColony extends Frame {
           }
         });
 
-    // create canvas
     canvasX = RES_X / 20;
     canvasY = RES_Y / 8;
     canvasWidth = (int) (RES_X * 0.75);
@@ -337,8 +305,6 @@ public class BeeColony extends Frame {
         new MouseAdapter() {
           @Override
           public void mousePressed(MouseEvent e) {
-            // if click on the canvas then set inSelection to false
-            // System.out.println(e.getX() + " " + e.getY());
             _inSelection = false;
             Tile tile = calculateSpawnLocation(e.getX(), e.getY());
             if (tile != null) {
@@ -347,13 +313,11 @@ public class BeeColony extends Frame {
           }
         });
 
-    // create button panel
     Panel _buttonPanel = new Panel();
     _buttonPanel.setLayout(new BoxLayout(_buttonPanel, BoxLayout.Y_AXIS));
     _buttonPanel.setBounds(RES_X - 150, 150, 140, RES_Y / 3);
     createButtons(_buttonPanel);
 
-    // create log panel
     _logPanel = new TextArea();
     _logPanel.setSize(400, 400);
     _logPanel.setBounds(150, RES_Y - 130, 600, 110);
@@ -365,9 +329,9 @@ public class BeeColony extends Frame {
     add(_buttonPanel);
     add(_foodPanel);
     add(_msgPanel);
-    setSize(RES_X, RES_Y); // frame size 300 width and 300 height
-    setLayout(null); // no layout manager
-    setVisible(true); // now frame will be visible, by default not visible
+    setSize(RES_X, RES_Y);
+    setLayout(null);
+    setVisible(true);
   }
 
   public void UpdateMessage(String s) {
@@ -412,42 +376,33 @@ public class BeeColony extends Frame {
           }
         });
 
-    // button for honey bee
     busyBeeBtn = new Button("Busy Bee ($2)");
     busyBeeBtn.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // set selected bee type
-            // in selection to true
             _selectedBeeType = EnumBeeType.busyBee;
             _inSelection = true;
             UpdateMessage("You selected Busy Bee");
           }
         });
 
-    // button for angry bee
     angryBeeBtn = new Button("Angry Bee ($1)");
     angryBeeBtn.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // set selected bee type
-            // in selection to true
             _selectedBeeType = EnumBeeType.angryBee;
             _inSelection = true;
             UpdateMessage("You selected Angry Bee");
           }
         });
 
-    // button for tanky bee
     tankyBeeBtn = new Button("Tanky Bee ($3)");
     tankyBeeBtn.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // set selected bee type
-            // in selection to true
             _selectedBeeType = EnumBeeType.tankyBee;
             _inSelection = true;
             UpdateMessage("You selected Tanky Bee");

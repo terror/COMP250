@@ -34,7 +34,6 @@ public abstract class Insect {
     if (object == this) return true;
     if (!(object instanceof Insect)) return false;
     Insect insect = (Insect) object;
-    if (insect.healthPoints != healthPoints || insect.tile != tile) return false;
-    return true;
+    return (insect.healthPoints == healthPoints && insect.tile.equals(tile));
   }
 }

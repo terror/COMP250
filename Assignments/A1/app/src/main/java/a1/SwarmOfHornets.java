@@ -1,13 +1,17 @@
 package a1;
 
 public class SwarmOfHornets {
-  private int left, right, size;
+  private int left, right;
   private Hornet[] hornets;
 
-  /** Default constructor for a swarm of hornets. */
+  /**
+   * Default constructor for a swarm of hornets.
+   *
+   * @return A default `SwarmOfHornets` instance.
+   */
   public SwarmOfHornets() {
-    left = right = size = 0;
-    hornets = new Hornet[size];
+    left = right = 0;
+    hornets = new Hornet[0];
   }
 
   /**
@@ -34,7 +38,7 @@ public class SwarmOfHornets {
    * @param hornet The hornet we want to add to the queue.
    */
   public void addHornet(Hornet hornet) {
-    if (right == size) expand();
+    if (right == hornets.length) expand();
     hornets[right++] = hornet;
   }
 
@@ -45,15 +49,13 @@ public class SwarmOfHornets {
    * @return Whether or not we were able to successfully remove the hornet from the queue.
    */
   public boolean removeHornet(Hornet hornet) {
-    if (left == right) {
-      return false;
-    }
+    if (left == right) return false;
 
     Integer index = indexOf(hornet);
 
-    if (index == null) {
-      return false;
-    }
+    if (index == null) return false;
+
+    hornets[index] = null;
 
     int left = 0;
 
@@ -73,17 +75,18 @@ public class SwarmOfHornets {
 
   /** Expand the size of the queue by max(1, size * 2). */
   private void expand() {
-    Hornet[] expanded = new Hornet[Math.max(1, size * 2)];
+    Hornet[] expanded = new Hornet[Math.max(1, hornets.length * 2)];
 
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < hornets.length; ++i) {
       expanded[i] = hornets[i];
     }
 
-    size = Math.max(1, size * 2);
+    hornets = expanded;
   }
 
   /**
-   * Return the index of the passed in hornet in the queue, null if its not present in the queue.
+   * Return the index of the passed in hornet in the queue, otherwise null if its not present in the
+   * queue.
    *
    * @param hornet The hornet we want the index of.
    * @return The index of the passed in hornet, null if its not in the queue.

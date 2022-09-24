@@ -11,7 +11,6 @@ import java.awt.Graphics;
  */
 
 public class GameCanvas extends Canvas {
-
   static final Color HIVE_COLOR = Color.yellow;
   static final Color NEST_COLOR = Color.red;
   static final Color PATH_COLOR = Color.gray;
@@ -24,8 +23,6 @@ public class GameCanvas extends Canvas {
   private boolean _mapGenerated = false;
 
   public GameCanvas(int canvasX, int canvasY, int canvasWidth, int canvasHeight) {
-    // this.setBackground();
-
     this.setBounds(canvasX, canvasY, canvasWidth, canvasHeight);
   }
 
@@ -33,11 +30,8 @@ public class GameCanvas extends Canvas {
     _map = map;
   }
 
-  // paint is called automatically every turn
-  // update map based on map object status
   @Override
   public void paint(Graphics g) {
-    // TODO Auto-generated method stub
     super.paint(g);
 
     if (_map == null) return;

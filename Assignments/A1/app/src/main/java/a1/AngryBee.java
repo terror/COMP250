@@ -9,7 +9,21 @@ public class AngryBee extends HoneyBee {
   }
 
   public boolean takeAction() {
-    return false;
+    Tile position = getPosition();
+
+    if (!position.isOnThePath() && !position.isHive()) {
+      return false;
+    }
+
+    Hornet candidate = position.getHornet();
+
+    if (candidate != null && candidate.getPosition().isNest()) {
+      return false;
+    }
+
+    candidate.takeDamage(attackDamage);
+
+    return true;
   }
 
   @Override
@@ -17,10 +31,9 @@ public class AngryBee extends HoneyBee {
     if (object == this) return true;
     if (!(object instanceof AngryBee)) return false;
     AngryBee bee = (AngryBee) object;
-    if (bee.getHealth() != getHealth()
-        || bee.getPosition() != getPosition()
-        || bee.getCost() != getCost()
-        || bee.attackDamage != attackDamage) return false;
-    return true;
+    return (bee.getHealth() == getHealth()
+        && bee.getPosition().equals(getPosition())
+        && bee.getCost() == getCost()
+        && bee.attackDamage == attackDamage);
   }
 }
