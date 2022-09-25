@@ -7,6 +7,9 @@ public class TankyBee extends HoneyBee {
   /**
    * A constructor for a `TankyBee` instance.
    *
+   * @param tile The position of this bee.
+   * @param attackDamage The amount of damage this bee can do.
+   * @param armor The amount of armor this bee has.
    * @return A new `TankyBee` instance with specified fields.
    */
   public TankyBee(Tile tile, int attackDamage, int armor) {
@@ -22,13 +25,8 @@ public class TankyBee extends HoneyBee {
    */
   public boolean takeAction() {
     Hornet candidate = getPosition().getHornet();
-
-    if (candidate == null) {
-      return false;
-    }
-
+    if (candidate == null) return false;
     candidate.takeDamage(attackDamage);
-
     return true;
   }
 
@@ -38,7 +36,7 @@ public class TankyBee extends HoneyBee {
    * @param damage The amount of damage to be taken.
    */
   public void takeDamage(int damage) {
-    super.takeDamage(damage * (100 / (100 + armor)));
+    super.takeDamage((int) Math.floor(damage * (100.0 / (100 + armor))));
   }
 
   @Override

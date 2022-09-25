@@ -4,6 +4,7 @@ public class BusyBee extends HoneyBee {
   /**
    * Constructor for a `BusyBee` instance.
    *
+   * @param tile The position of this bee.
    * @return A `BusyBee` instance with a specified position.
    */
   public BusyBee(Tile tile) {

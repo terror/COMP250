@@ -6,6 +6,9 @@ public class Hornet extends Insect {
   /**
    * Constructor for a `Hornet` instance.
    *
+   * @param tile The position of this hornet.
+   * @param healthPoints The current health of this hornet.
+   * @param attackDamage The amount of damage this hornet can do.
    * @return A new `Hornet` instance with specified fields.
    */
   public Hornet(Tile tile, int healthPoints, int attackDamage) {

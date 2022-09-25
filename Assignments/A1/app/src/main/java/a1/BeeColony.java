@@ -63,7 +63,11 @@ public class BeeColony extends Frame {
   }
 
   public static void main(String args[]) {
-    BeeColony game = new BeeColony();
+    if (args.length != 0 && args[0].equals("test")) {
+      Tester.runTests();
+    } else {
+      BeeColony game = new BeeColony();
+    }
   }
 
   private void initMap() {

@@ -15,7 +15,9 @@ public class Tile {
    *
    * @return A default `Tile` instance.
    */
-  public Tile() {}
+  public Tile() {
+    swarm = new SwarmOfHornets();
+  }
 
   /**
    * Constructor with all fields.
@@ -30,7 +32,7 @@ public class Tile {
       Tile nextTowardHive,
       Tile nextTowardNest,
       HoneyBee bee,
-      SwarmOfHornets swam) {
+      SwarmOfHornets swarm) {
     this.food = food;
     this.hasBeeHive = hasBeeHive;
     this.hasHornetNest = hasHornetNest;
@@ -130,7 +132,7 @@ public class Tile {
   /**
    * Retrieve the first hornet in this tiles swarm.
    *
-   * @return The first hornet in the swarm on this tile.
+   * @return The first hornet in the swarm on this tile, null if we don't have a swarm set.
    */
   public Hornet getHornet() {
     return swarm.getFirstHornet();
@@ -173,7 +175,7 @@ public class Tile {
    * @return Whether or not we were able to a bee to this tile.
    */
   private boolean addBee(HoneyBee bee) {
-    if (bee != null || hasHornetNest) return false;
+    if (this.bee != null || hasHornetNest) return false;
     this.bee = bee;
     return true;
   }

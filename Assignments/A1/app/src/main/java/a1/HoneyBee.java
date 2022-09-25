@@ -6,6 +6,9 @@ public abstract class HoneyBee extends Insect {
   /**
    * Constructor for a `HoneyBee` instance.
    *
+   * @param tile The position of this bee.
+   * @param healthPoints The current health of this bee.
+   * @param cost The food cost of this bee.
    * @return A `HoneyBee` instance with specified fields.
    */
   public HoneyBee(Tile tile, int healthPoints, int cost) {
@@ -20,10 +23,6 @@ public abstract class HoneyBee extends Insect {
    */
   public int getCost() {
     return this.cost;
-  }
-
-  public boolean takeAction() {
-    return false;
   }
 
   @Override

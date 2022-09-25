@@ -24,6 +24,17 @@ public class SwarmOfHornets {
   }
 
   /**
+   * Get all hornets in this swarm.
+   *
+   * @return All the hornets in this swarm.
+   */
+  public Hornet[] getHornets() {
+    Hornet[] ret = new Hornet[right];
+    for (int i = 0; i < right; ++i) ret[i] = hornets[i];
+    return ret;
+  }
+
+  /**
    * Retrieve the hornet at the front of the queue.
    *
    * @return The hornet at the front of the queue, null if the queue is empty.
