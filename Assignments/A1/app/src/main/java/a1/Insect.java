@@ -1,14 +1,19 @@
 package a1;
 
 public abstract class Insect {
-  private Tile tile;
+  private Tile position;
   private int healthPoints;
 
-  /** The super constructor used for `Insect` subclasses. */
-  public Insect(Tile tile, int healthPoints) {
-    this.tile = tile;
+  /**
+   * The super constructor used for `Insect` subclasses.
+   *
+   * @param position The position of this insect.
+   * @param healthPoints The amount of health points this insect has.
+   */
+  public Insect(Tile position, int healthPoints) {
+    this.position = position;
     this.healthPoints = healthPoints;
-    if (!tile.addInsect(this)) throw new IllegalArgumentException();
+    if (!position.addInsect(this)) throw new IllegalArgumentException();
   }
 
   /**
@@ -17,7 +22,7 @@ public abstract class Insect {
    * @return The position as a `Tile` instance.
    */
   public final Tile getPosition() {
-    return this.tile;
+    return this.position;
   }
 
   /**
@@ -32,24 +37,31 @@ public abstract class Insect {
   /**
    * Set the position of this insect.
    *
-   * @param tile The tile in which this insect should be placed on.
+   * @param position The tile in which this insect should be placed on.
    */
-  public void setPosition(Tile tile) {
-    this.tile = tile;
+  public void setPosition(Tile position) {
+    this.position = position;
   }
 
   /**
-   * Take damage from some external caller.
+   * Take damage from some external caller. If the health of this insect drops below zero we remove
+   * it from its position.
    *
    * @param damage The amount of damage to be taken as an interger.
    */
   public void takeDamage(int damage) {
     healthPoints -=
-        this instanceof HoneyBee && tile.isHive() ? Math.floor(damage - (damage * 0.10)) : damage;
-    if (healthPoints <= 0) tile.removeInsect(this);
+        this instanceof HoneyBee && position.isHive()
+            ? Math.floor(damage - (damage * 0.10))
+            : damage;
+    if (healthPoints <= 0) position.removeInsect(this);
   }
 
-  /** Method subclasses should override if they are to perform actions. */
+  /*
+   * A method subclasses should override if they are to perform actions.
+   *
+   * @return A boolean indicating whether or not this action succeeded.
+   */
   public abstract boolean takeAction();
 
   @Override
@@ -57,6 +69,6 @@ public abstract class Insect {
     if (object == this) return true;
     if (!(object instanceof Insect)) return false;
     Insect insect = (Insect) object;
-    return (insect.healthPoints == healthPoints && insect.tile.equals(tile));
+    return (insect.healthPoints == healthPoints && insect.position.equals(position));
   }
 }

@@ -10,13 +10,14 @@ public class AngryBee extends HoneyBee {
    * @param attackDamage How much damage this bee can do.
    * @return A new `AngryBee` instance with the specified fields.
    */
-  public AngryBee(Tile tile, int attackDamage) {
-    super(tile, 10, 1);
+  public AngryBee(Tile position, int attackDamage) {
+    super(position, 10, 1);
     this.attackDamage = attackDamage;
   }
 
   /**
-   * Attempt to sting the first hornet on our path.
+   * Attempt to sting the first hornet on our path. We can't sting hornets that are positioned on
+   * the nest nor can we sting hornets if we're not on the path or the hive.
    *
    * @return Whether or not we successfully stung a hornet that is along our path.
    */
@@ -28,9 +29,9 @@ public class AngryBee extends HoneyBee {
     }
 
     while (true) {
-      if (position == null) return false;
+      if (position.isNest()) return false;
       Hornet candidate = position.getHornet();
-      if (candidate == null) position = position.towardTheHive();
+      if (candidate == null) position = position.towardTheNest();
       else {
         candidate.takeDamage(attackDamage);
         break;
@@ -45,9 +46,6 @@ public class AngryBee extends HoneyBee {
     if (object == this) return true;
     if (!(object instanceof AngryBee)) return false;
     AngryBee bee = (AngryBee) object;
-    return (bee.getHealth() == getHealth()
-        && bee.getPosition().equals(getPosition())
-        && bee.getCost() == getCost()
-        && bee.attackDamage == attackDamage);
+    return super.equals(bee) && attackDamage == bee.attackDamage;
   }
 }

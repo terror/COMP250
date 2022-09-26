@@ -11,8 +11,8 @@ public class Hornet extends Insect {
    * @param attackDamage The amount of damage this hornet can do.
    * @return A new `Hornet` instance with specified fields.
    */
-  public Hornet(Tile tile, int healthPoints, int attackDamage) {
-    super(tile, healthPoints);
+  public Hornet(Tile position, int healthPoints, int attackDamage) {
+    super(position, healthPoints);
     this.attackDamage = attackDamage;
   }
 
@@ -24,14 +24,17 @@ public class Hornet extends Insect {
   public boolean takeAction() {
     Tile position = getPosition();
 
-    if (position.getBee() == null && position.isHive()) {
+    if (position == null || (position.getBee() == null && position.isHive())) {
       return false;
     }
 
     if (position.getBee() != null) {
       position.getBee().takeDamage(attackDamage);
     } else {
-      setPosition(position.towardTheHive());
+      Tile next = position.towardTheHive();
+      position.removeInsect(this);
+      next.addInsect(this);
+      setPosition(next);
     }
 
     return true;
@@ -42,8 +45,6 @@ public class Hornet extends Insect {
     if (object == this) return true;
     if (!(object instanceof Hornet)) return false;
     Hornet hornet = (Hornet) object;
-    return (hornet.getHealth() == getHealth()
-        && hornet.getPosition().equals(getPosition())
-        && hornet.attackDamage == attackDamage);
+    return super.equals(hornet) && attackDamage == hornet.attackDamage;
   }
 }

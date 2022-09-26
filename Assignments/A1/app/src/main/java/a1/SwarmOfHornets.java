@@ -24,7 +24,8 @@ public class SwarmOfHornets {
   }
 
   /**
-   * Get all hornets in this swarm.
+   * Get all hornets in this swarm. Note that we return a copy of the array without the `null`
+   * values present.
    *
    * @return All the hornets in this swarm.
    */
@@ -44,7 +45,8 @@ public class SwarmOfHornets {
   }
 
   /**
-   * Add a hornet to the queue.
+   * Add a hornet to the queue. Note that we expand the array's size by max(1, size * 2) if we're
+   * currently at full capacity.
    *
    * @param hornet The hornet we want to add to the queue.
    */

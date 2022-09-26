@@ -11,8 +11,8 @@ public abstract class HoneyBee extends Insect {
    * @param cost The food cost of this bee.
    * @return A `HoneyBee` instance with specified fields.
    */
-  public HoneyBee(Tile tile, int healthPoints, int cost) {
-    super(tile, healthPoints);
+  public HoneyBee(Tile position, int healthPoints, int cost) {
+    super(position, healthPoints);
     this.cost = cost;
   }
 
@@ -30,8 +30,6 @@ public abstract class HoneyBee extends Insect {
     if (object == this) return true;
     if (!(object instanceof HoneyBee)) return false;
     HoneyBee bee = (HoneyBee) object;
-    return (bee.getHealth() == getHealth()
-        && bee.getPosition().equals(getPosition())
-        && bee.cost == cost);
+    return super.equals(bee) && cost == bee.cost;
   }
 }

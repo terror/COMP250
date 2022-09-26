@@ -12,8 +12,8 @@ public class TankyBee extends HoneyBee {
    * @param armor The amount of armor this bee has.
    * @return A new `TankyBee` instance with specified fields.
    */
-  public TankyBee(Tile tile, int attackDamage, int armor) {
-    super(tile, 30, 3);
+  public TankyBee(Tile position, int attackDamage, int armor) {
+    super(position, 30, 3);
     this.attackDamage = attackDamage;
     this.armor = armor;
   }
@@ -44,10 +44,6 @@ public class TankyBee extends HoneyBee {
     if (object == this) return true;
     if (!(object instanceof TankyBee)) return false;
     TankyBee bee = (TankyBee) object;
-    return (bee.getHealth() == getHealth()
-        && bee.getPosition().equals(getPosition())
-        && bee.getCost() == getCost()
-        && bee.attackDamage == attackDamage
-        && bee.armor == armor);
+    return super.equals(bee) && attackDamage == bee.attackDamage && armor == bee.armor;
   }
 }
