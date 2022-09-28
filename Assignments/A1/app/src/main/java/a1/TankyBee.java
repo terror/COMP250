@@ -36,7 +36,7 @@ public class TankyBee extends HoneyBee {
    * @param damage The amount of damage to be taken.
    */
   public void takeDamage(int damage) {
-    super.takeDamage((int) Math.floor(damage * (100.0 / (100 + armor))));
+    super.takeDamage((int) (damage * (100.0 / (100 + armor))));
   }
 
   @Override

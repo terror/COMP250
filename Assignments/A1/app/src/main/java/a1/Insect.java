@@ -51,9 +51,7 @@ public abstract class Insect {
    */
   public void takeDamage(int damage) {
     healthPoints -=
-        this instanceof HoneyBee && position.isHive()
-            ? Math.floor(damage - (damage * 0.10))
-            : damage;
+        this instanceof HoneyBee && position.isHive() ? (int) (damage - (damage * 0.10)) : damage;
     if (healthPoints <= 0) position.removeInsect(this);
   }
 
