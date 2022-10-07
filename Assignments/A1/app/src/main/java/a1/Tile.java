@@ -204,7 +204,7 @@ public class Tile {
    * @return Whether or not we were able to remove a bee from this tile.
    */
   private boolean removeBee(HoneyBee bee) {
-    if (this.bee == null) return false;
+    if (this.bee == null || bee != this.bee) return false;
     this.bee.setPosition(null);
     this.bee = null;
     return true;
@@ -216,7 +216,8 @@ public class Tile {
    * @return Whether or not we were able to remove a hornet from this tile.
    */
   private boolean removeHornet(Hornet hornet) {
+    if (!swarm.removeHornet(hornet)) return false;
     hornet.setPosition(null);
-    return swarm.removeHornet(hornet);
+    return true;
   }
 }
