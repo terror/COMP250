@@ -5,12 +5,145 @@ package a2;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import a2.Deck.*;
 import org.junit.jupiter.api.Test;
 
 class AppTest {
+  /*
+   * Create a new card array based off cards as strings.
+   *
+   * @param cards Cards as strings.
+   * @return A new `Card` array.
+   */
+  private static Card[] parseCards(String[] cards) {
+    Deck temp = new Deck();
+
+    Card[] ret = new Card[cards.length];
+
+    for (int i = 0; i < cards.length; ++i) {
+      String rank = ("" + cards[i].charAt(0));
+      String suit = ("" + cards[i].charAt(1));
+      if (suit.equals("J")) ret[i] = temp.new Joker(rank.equals("R") ? "red" : "black");
+      else ret[i] = temp.new PlayingCard(suit, Integer.parseInt(rank.equals("A") ? "1" : rank));
+    }
+
+    return ret;
+  }
+
+  /*
+   * Populate a deck full of cards.
+   *
+   * @param cards Cards as strings.
+   * @return The newly populated deck.
+   */
+  private static Deck populateDeck(String[] cards) {
+    Deck deck = new Deck();
+    for (Card card : parseCards(cards)) deck.addCard(card);
+    return deck;
+  }
+
+  /*
+   * Ensure a deck has specified cards.
+   *
+   * @param deck The deck to check.
+   * @param cards The cards as strings to ensure are in `deck`.
+   */
+  private static void assertContains(Deck deck, String[] order) {
+    Card head = deck.head;
+
+    for (String card : order) {
+      assertEquals(card.toString(), head.toString());
+      head = head.next;
+    }
+  }
+
   @Test
-  void appHasAGreeting() {
-    App classUnderTest = new App();
-    assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+  void deckDefaultConstructor() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+  }
+
+  @Test
+  void deckCopyConstructor() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck foo = AppTest.populateDeck(cards);
+
+    Deck bar = new Deck(foo);
+
+    assertContains(bar, cards);
+  }
+
+  @Test
+  void deckConfigurationConstructorValid() {
+    Deck deck = new Deck(4, 3);
+    assertContains(
+        deck,
+        new String[] {
+          "AC", "2C", "3C", "4C", "AD", "2D", "3D", "4D", "AH", "2H", "3H", "4H", "RJ", "BJ"
+        });
+  }
+
+  @Test
+  void deckConfigurationConstructorInvalidNumberOfCards() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Deck(200, 3),
+        "Expected `Deck` constructor to throw");
+  }
+
+  @Test
+  void deckConfigurationConstructorInvalidNumberOfSuits() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new Deck(10, 500),
+        "Expected `Deck` constructor to throw");
+  }
+
+  @Test
+  void addIsCircular() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+
+    Card head = deck.head;
+
+    if (head != null) {
+      do {
+        head = head.next;
+      } while (head != deck.head);
+    }
+
+    assertEquals(head, deck.head);
+  }
+
+  @Test
+  void locateJoker() {
+    String[] cards = {"RJ", "BJ"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+
+    assertEquals(deck.locateJoker("blue"), null);
+
+    assertNotEquals(deck.locateJoker("red"), null);
+    assertNotEquals(deck.locateJoker("black"), null);
+  }
+
+  @Test
+  void lookupCard() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+
+    assertEquals(deck.lookUpCard().toString(), "4D");
   }
 }
