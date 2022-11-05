@@ -66,21 +66,18 @@ public class Deck {
    * This method runs in O(1).
    */
   public void addCard(Card card) {
+    ++numOfCards;
+
     if (head == null) {
       card.next = card.prev = card;
       head = card;
-      return;
+    } else {
+      Card last = head.prev;
+      card.next = head;
+      head.prev = card;
+      card.prev = last;
+      last.next = card;
     }
-
-    Card last = head.prev;
-
-    card.next = head;
-    head.prev = card;
-
-    card.prev = last;
-    last.next = card;
-
-    ++numOfCards;
   }
 
   /*
@@ -99,7 +96,7 @@ public class Deck {
     int index = 0;
 
     do {
-      arr[index++] = curr.getCopy();
+      arr[index++] = curr;
       curr = curr.next;
     } while (curr != head);
 
