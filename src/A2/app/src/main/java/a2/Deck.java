@@ -36,7 +36,7 @@ public class Deck {
   }
 
   /*
-   * Implements a constructor that builds a deck with condfiguration values:
+   * Implements a constructor that builds a deck with configuration values:
    * `numOfCardsPerSuit` and `numOfSuits`.
    *
    * This method runs in O(nm) where n = the number of cards per suit and
@@ -46,7 +46,9 @@ public class Deck {
     if (numOfCardsPerSuit < MIN_CARDS_PER_SUIT
         || numOfCardsPerSuit > MAX_CARDS_PER_SUIT
         || numOfSuits < MIN_NUM_OF_SUITS
-        || numOfSuits > MAX_NUM_OF_SUITS) throw new IllegalArgumentException();
+        || numOfSuits > MAX_NUM_OF_SUITS) {
+      throw new IllegalArgumentException();
+    }
 
     for (int i = 0; i < numOfSuits; ++i) {
       for (int j = 1; j <= numOfCardsPerSuit; ++j) {
