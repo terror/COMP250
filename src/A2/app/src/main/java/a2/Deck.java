@@ -142,9 +142,23 @@ public class Deck {
    * This method runs in O(p).
    */
   public void moveCard(Card c, int p) {
+    Card curr = c;
+
+    // Traverse `p` times
     while (p != 0) {
+      curr = curr.next;
       --p;
     }
+
+    // Remove the node from the list
+    c.next.prev = c.prev;
+    c.prev.next = c.next;
+
+    // Place it in the right spot
+    c.next = curr.next;
+    curr.next.prev = c;
+    c.prev = curr;
+    curr.next = c;
   }
 
   /*
