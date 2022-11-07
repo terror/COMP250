@@ -207,7 +207,41 @@ public class Deck {
    * This method runs in O(n).
    */
   public int generateNextKeystreamValue() {
-    return 0;
+    Joker redJoker = locateJoker("red");
+
+    moveCard(redJoker, 1);
+
+    if (redJoker.next == head) {
+      moveCard(redJoker, 1);
+    }
+
+    Joker blackJoker = locateJoker("black");
+
+    moveCard(blackJoker, 2);
+
+    if (blackJoker.next == head) {
+      moveCard(blackJoker, 2);
+    }
+
+    if (blackJoker.next.next == head) {
+      moveCard(blackJoker, 2);
+    }
+
+    tripleCut(redJoker, blackJoker);
+
+    countCut();
+
+    Card curr = head;
+
+    for (int i = 0; i < head.getValue(); ++i) {
+      curr = curr.next;
+    }
+
+    if (curr instanceof Joker) {
+      return generateNextKeystreamValue();
+    }
+
+    return curr.getValue();
   }
 
   /*
