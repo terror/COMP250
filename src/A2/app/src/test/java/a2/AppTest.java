@@ -146,4 +146,43 @@ class AppTest {
 
     assertEquals(deck.lookUpCard().toString(), "4D");
   }
+
+  @Test
+  void removeCard() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+
+    deck.remove(deck.head);
+
+    assertContains(deck, new String[] {"2H", "4D"});
+  }
+
+  @Test
+  void insertAfter() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+
+    deck.insertAfter(deck.head, deck.new PlayingCard("D", 1));
+
+    assertContains(deck, new String[] {"AC", "AD", "2H", "4D"});
+  }
+
+  @Test
+  void insertBefore() {
+    String[] cards = {"AC", "2H", "4D"};
+
+    Deck deck = AppTest.populateDeck(cards);
+
+    assertContains(deck, cards);
+
+    deck.insertBefore(deck.head.next, deck.new PlayingCard("D", 1));
+
+    assertContains(deck, new String[] {"AC", "AD", "2H", "4D"});
+  }
 }

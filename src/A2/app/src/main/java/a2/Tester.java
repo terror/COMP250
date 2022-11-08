@@ -931,9 +931,9 @@ class TripleCut1 implements Runnable {
     deck.addCard(c1);
     deck.addCard(c2);
     deck.addCard(c3);
-    deck.addCard(c4);
+    deck.addCard(c4); // AC 2C AH 2H
 
-    deck.tripleCut(c1, c3);
+    deck.tripleCut(c1, c3); // Expected outcome: 2H AC 2C AH
 
     // test whether all the cards are in the right order
     boolean head = deck.head == c4;
@@ -966,9 +966,9 @@ class TripleCut2 implements Runnable {
     deck.addCard(c1);
     deck.addCard(c2);
     deck.addCard(c3);
-    deck.addCard(c4);
+    deck.addCard(c4); // AC 2C AH 2H
 
-    deck.tripleCut(c2, c4);
+    deck.tripleCut(c2, c4); // Expected Outcome: 2C AH 2H AC
 
     boolean head = deck.head == c2;
     boolean tail = deck.head.prev == c1;
@@ -1043,7 +1043,7 @@ class CountCut1 implements Runnable {
     deck.addCard(c2); // Deck : AC AH 2H 2C
 
     deck.countCut(); // Cut 2 numbers from the top (taking value of 2C)
-    // Expected Deck Outcome : 2H 2C AC AH
+    // Expected Deck Outcome : 2H AC AH 2C
 
     boolean head = deck.head == c4;
     boolean tail = deck.head.prev == c2;
@@ -1188,6 +1188,7 @@ class GenerateNextKeystreamValue2 implements Runnable {
               + " value is 1 but got "
               + deck.generateNextKeystreamValue());
     } else if (deck.head != deck.locateJoker("red")) {
+      System.out.println(deck);
       throw new AssertionError("Incorrect head after generateNextKeystreamValue()");
     }
     System.out.println("assignment2.Test passed.");

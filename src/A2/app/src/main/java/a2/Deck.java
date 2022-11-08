@@ -140,25 +140,20 @@ public class Deck {
    * not empty).
    *
    * This method runs in O(p).
+   *
+   * @param c The card to move.
+   * @param p The number of positions to move `c`.
    */
   public void moveCard(Card c, int p) {
     Card curr = c;
 
-    // Traverse `p` times
-    while (p != 0) {
+    for (int i = 0; i < p; ++i) {
       curr = curr.next;
-      --p;
     }
 
-    // Remove the node from the list
-    c.next.prev = c.prev;
-    c.prev.next = c.next;
+    remove(c);
 
-    // Place it in the right spot
-    c.next = curr.next;
-    curr.next.prev = c;
-    c.prev = curr;
-    curr.next = c;
+    insertAfter(curr, c);
   }
 
   /*
@@ -166,9 +161,65 @@ public class Deck {
    * can assume that the input cards belong to the deck and the first one is
    * nearest to the top of the deck.
    *
-   * This method runs in O(1)
+   * This method runs in O(1).
+   *
+   * @param left The card closer to head.
+   * @param right The card closer to the tail.
    */
-  public void tripleCut(Card firstCard, Card secondCard) {}
+  public void tripleCut(Card firstCard, Card secondCard) {
+    Card tail = head.prev;
+
+    // Don't need to swap anything
+    if (firstCard == head && secondCard == tail || firstCard == tail && secondCard == head) {
+      return;
+    }
+
+    // If one of the cards is a head node
+    if (firstCard == head || secondCard == head) {
+      if (firstCard == head) {
+        Card under = secondCard.next, bottom = firstCard.prev;
+        bottom.next = firstCard;
+        firstCard.prev = bottom;
+        secondCard.next = under;
+        under.prev = secondCard;
+        head = under;
+      } else {
+        Card under = firstCard.next, bottom = secondCard.prev;
+        bottom.next = secondCard;
+        secondCard.prev = bottom;
+        firstCard.next = under;
+        under.prev = firstCard;
+        head = under;
+      }
+      // If one of the cards is the last node
+    } else if (firstCard == tail || secondCard == tail) {
+      if (firstCard == tail) {
+        Card upper = head, lower = secondCard.prev;
+        firstCard.next = upper;
+        upper.prev = firstCard;
+        secondCard.prev = lower;
+        lower.next = secondCard;
+        head = secondCard;
+      } else {
+        Card upper = head, lower = firstCard.prev;
+        secondCard.next = upper;
+        upper.prev = secondCard;
+        firstCard.prev = lower;
+        lower.next = firstCard;
+        head = firstCard;
+      }
+      // Both cards are non-head, non-tail nodes
+    } else {
+      Card left = firstCard.prev, right = secondCard.next;
+      firstCard.prev = tail;
+      tail.next = firstCard;
+      secondCard.next = head;
+      head.prev = secondCard;
+      left.next = right;
+      right.prev = left;
+      head = right;
+    }
+  }
 
   /*
    * Performs a count cut on the deck. Note that if the value of the
@@ -177,7 +228,28 @@ public class Deck {
    *
    * This method runs in O(n).
    */
-  public void countCut() {}
+  public void countCut() {
+    Card last = head.prev;
+
+    if (last.getValue() % numOfCards == 0) {
+      return;
+    }
+
+    Card[] cards = new Card[last.getValue()];
+
+    for (int i = 0; i < cards.length; ++i) {
+      cards[i] = head;
+      head = head.next;
+    }
+
+    head.prev = last;
+    last.next = head;
+
+    for (int i = cards.length - 1; i >= 0; --i) {
+      insertBefore(last, cards[i]);
+      last = cards[i];
+    }
+  }
 
   /*
    * Returns the card that can be found by looking at the value of the
@@ -227,7 +299,11 @@ public class Deck {
       moveCard(blackJoker, 2);
     }
 
-    tripleCut(redJoker, blackJoker);
+    if (distanceFromHead(redJoker) < distanceFromHead(blackJoker)) {
+      tripleCut(redJoker, blackJoker);
+    } else {
+      tripleCut(blackJoker, redJoker);
+    }
 
     countCut();
 
@@ -245,11 +321,105 @@ public class Deck {
   }
 
   /*
-   * Clears the deck.
+   * Removes a card from the deck. Assumes the input `c` is
+   * already part of the deck.
+   *
+   * This method runs in O(1).
+   *
+   * @card c The card to remove
    */
-  private void clear() {
+  public void remove(Card c) {
+    c.next.prev = c.prev;
+    c.prev.next = c.next;
+  }
+
+  /*
+   * Insert a card `toInsert` directly after the input card `c`.
+   * Assumes `c` and `toInsert` are part of the deck.
+   *
+   * This method runs in O(1).
+   *
+   * @param c The card to insert another one after
+   * @param toInsert The card to insert
+   */
+  public void insertAfter(Card c, Card toInsert) {
+    toInsert.next = c.next;
+    c.next.prev = toInsert;
+    toInsert.prev = c;
+    c.next = toInsert;
+  }
+
+  /*
+   * Insert a card `toInsert` directly before the input card `c`.
+   * Assumes `c` and `toInsert` are part of the deck.
+   *
+   * This method runs in O(1).
+   *
+   * @param c The card to insert another one before
+   * @param toInsert The card to insert
+   */
+  public void insertBefore(Card c, Card toInsert) {
+    toInsert.prev = c.prev;
+    c.prev.next = toInsert;
+    toInsert.next = c;
+    c.prev = toInsert;
+  }
+
+  /*
+   * Computes the distance from head for a given Card `c`.
+   * Assumes the Card `c` is present in the deck.
+   *
+   * This method runs in O(n).
+   *
+   * @param c The input card.
+   * @return The distance from head.
+   */
+  public int distanceFromHead(Card c) {
+    int distance = 0;
+
+    Card curr = head;
+
+    if (curr != null) {
+      do {
+        ++distance;
+        curr = curr.next;
+      } while (curr != c);
+    }
+
+    return distance;
+  }
+
+  /*
+   * Clears the deck.
+   *
+   * This method runs in O(1).
+   */
+  public void clear() {
     head = null;
     numOfCards = 0;
+  }
+
+  /*
+   * Converts and returns a deck as a string.
+   *
+   * This method runs in O(n).
+   *
+   * @return The deck as a string.
+   */
+  @Override
+  public String toString() {
+    String ret = "";
+
+    Card curr = head;
+
+    if (curr != null) {
+      do {
+        ret += curr.toString() + " ";
+        curr = curr.next;
+      } while (curr != head);
+    }
+
+    return ret;
   }
 
   public abstract class Card {
@@ -272,6 +442,7 @@ public class Deck {
 
     public String toString() {
       String info = "";
+
       if (this.rank == 1) {
         info += "A";
       } else if (this.rank > 10) {
@@ -280,8 +451,8 @@ public class Deck {
       } else {
         info += this.rank;
       }
-      info = (info + this.suit.charAt(0)).toUpperCase();
-      return info;
+
+      return (info + this.suit.charAt(0)).toUpperCase();
     }
 
     public PlayingCard getCopy() {
