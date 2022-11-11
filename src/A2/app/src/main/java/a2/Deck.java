@@ -166,58 +166,24 @@ public class Deck {
    * @param left The card closer to head.
    * @param right The card closer to the tail.
    */
-  public void tripleCut(Card firstCard, Card secondCard) {
-    Card tail = head.prev;
+  public void tripleCut(Card left, Card right) {
+    Card h = head, t = head.prev;
 
-    // Don't need to swap anything
-    if (firstCard == head && secondCard == tail || firstCard == tail && secondCard == head) {
-      return;
-    }
+    // Don't need to change anything
+    if (left == null || (left == h && right == t)) return;
 
-    // If one of the cards is a head node
-    if (firstCard == head || secondCard == head) {
-      if (firstCard == head) {
-        Card under = secondCard.next, bottom = firstCard.prev;
-        bottom.next = firstCard;
-        firstCard.prev = bottom;
-        secondCard.next = under;
-        under.prev = secondCard;
-        head = under;
-      } else {
-        Card under = firstCard.next, bottom = secondCard.prev;
-        bottom.next = secondCard;
-        secondCard.prev = bottom;
-        firstCard.next = under;
-        under.prev = firstCard;
-        head = under;
-      }
-      // If one of the cards is the last node
-    } else if (firstCard == tail || secondCard == tail) {
-      if (firstCard == tail) {
-        Card upper = head, lower = secondCard.prev;
-        firstCard.next = upper;
-        upper.prev = firstCard;
-        secondCard.prev = lower;
-        lower.next = secondCard;
-        head = secondCard;
-      } else {
-        Card upper = head, lower = firstCard.prev;
-        secondCard.next = upper;
-        upper.prev = secondCard;
-        firstCard.prev = lower;
-        lower.next = firstCard;
-        head = firstCard;
-      }
-      // Both cards are non-head, non-tail nodes
-    } else {
-      Card left = firstCard.prev, right = secondCard.next;
-      firstCard.prev = tail;
-      tail.next = firstCard;
-      secondCard.next = head;
-      head.prev = secondCard;
-      left.next = right;
-      right.prev = left;
-      head = right;
+    if (left == h) head = right.next;
+    else if (right == t) head = left;
+    else {
+      Card a = left.prev, b = right.next;
+      left.prev = t;
+      t.next = left;
+      right.next = h;
+      h.prev = right;
+      head = b;
+      head.prev = a;
+      a.next = b;
+      b.prev = a;
     }
   }
 
@@ -229,26 +195,29 @@ public class Deck {
    * This method runs in O(n).
    */
   public void countCut() {
-    Card last = head.prev;
+    Card curr = head;
 
-    if (last.getValue() % numOfCards == 0) {
-      return;
-    }
+    if (numOfCards == 0) return;
 
-    Card[] cards = new Card[last.getValue()];
+    int value = head.prev.getValue() % numOfCards;
 
-    for (int i = 0; i < cards.length; ++i) {
-      cards[i] = head;
-      head = head.next;
-    }
+    if (value == 0 || (numOfCards - 1) == value) return;
 
-    head.prev = last;
-    last.next = head;
+    for (int i = 0; i < value - 1; i++) curr = curr.next;
 
-    for (int i = cards.length - 1; i >= 0; --i) {
-      insertBefore(last, cards[i]);
-      last = cards[i];
-    }
+    Card ot = head.prev, oh = head;
+    Card nh = curr.next, nt = curr;
+
+    nh.prev = curr;
+    curr.next = nh;
+    ot.prev.next = oh;
+    oh.prev = ot.prev;
+    nt.next = ot;
+    ot.prev = nt;
+    nh.prev = ot;
+    ot.next = nh;
+
+    head = nh;
   }
 
   /*
@@ -283,37 +252,23 @@ public class Deck {
 
     moveCard(redJoker, 1);
 
-    if (redJoker.next == head) {
-      moveCard(redJoker, 1);
-    }
-
     Joker blackJoker = locateJoker("black");
 
     moveCard(blackJoker, 2);
 
-    if (blackJoker.next == head) {
-      moveCard(blackJoker, 2);
+    Card first = head;
+
+    while (first != redJoker && first != blackJoker) {
+      first = first.next;
     }
 
-    if (blackJoker.next.next == head) {
-      moveCard(blackJoker, 2);
-    }
-
-    if (distanceFromHead(redJoker) < distanceFromHead(blackJoker)) {
-      tripleCut(redJoker, blackJoker);
-    } else {
-      tripleCut(blackJoker, redJoker);
-    }
+    tripleCut(first, first == redJoker ? blackJoker : redJoker);
 
     countCut();
 
-    Card curr = head;
+    Card curr = lookUpCard();
 
-    for (int i = 0; i < head.getValue(); ++i) {
-      curr = curr.next;
-    }
-
-    if (curr instanceof Joker) {
+    if (curr == null) {
       return generateNextKeystreamValue();
     }
 
@@ -347,46 +302,6 @@ public class Deck {
     c.next.prev = toInsert;
     toInsert.prev = c;
     c.next = toInsert;
-  }
-
-  /*
-   * Insert a card `toInsert` directly before the input card `c`.
-   * Assumes `c` and `toInsert` are part of the deck.
-   *
-   * This method runs in O(1).
-   *
-   * @param c The card to insert another one before
-   * @param toInsert The card to insert
-   */
-  public void insertBefore(Card c, Card toInsert) {
-    toInsert.prev = c.prev;
-    c.prev.next = toInsert;
-    toInsert.next = c;
-    c.prev = toInsert;
-  }
-
-  /*
-   * Computes the distance from head for a given Card `c`.
-   * Assumes the Card `c` is present in the deck.
-   *
-   * This method runs in O(n).
-   *
-   * @param c The input card.
-   * @return The distance from head.
-   */
-  public int distanceFromHead(Card c) {
-    int distance = 0;
-
-    Card curr = head;
-
-    if (curr != null) {
-      do {
-        ++distance;
-        curr = curr.next;
-      } while (curr != c);
-    }
-
-    return distance;
   }
 
   /*

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/* ======== TESTER #1 ======== */
+
 class AddCard_AllRef implements Runnable {
   @Override
   public void run() {
@@ -917,6 +919,8 @@ class Shuffle_Three implements Runnable {
   }
 }
 
+/* ======== TESTER #2 ======== */
+
 class CreateDeck1 implements Runnable {
   public void run() {
     Deck deck = new Deck(4, 3);
@@ -1555,7 +1559,6 @@ class SolitaireCipher2 implements Runnable {
 }
 
 public class Tester {
-  // To skip running some tests, just comment them out below.
   static String[] tests = {
     "a2.AddCard_AllRef",
     "a2.AddCard_CheckHead",
@@ -1607,7 +1610,8 @@ public class Tester {
   };
 
   public static void run() {
-    int numPassed = 0;
+    int passed = 0;
+
     for (String className : tests) {
       System.out.printf("%n======= %s =======%n", className);
       System.out.flush();
@@ -1615,13 +1619,14 @@ public class Tester {
         Runnable testCase =
             (Runnable) Class.forName(className).getDeclaredConstructor().newInstance();
         testCase.run();
-        numPassed++;
+        passed++;
       } catch (AssertionError e) {
         System.out.println(e);
       } catch (Exception e) {
         e.printStackTrace(System.out);
       }
     }
-    System.out.printf("%n%n%d of %d tests passed.%n", numPassed, tests.length);
+
+    System.out.printf("%n%n%d of %d tests passed.%n", passed, tests.length);
   }
 }

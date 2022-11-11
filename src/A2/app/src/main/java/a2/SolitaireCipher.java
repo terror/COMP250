@@ -1,6 +1,8 @@
 package a2;
 
 public class SolitaireCipher {
+  private int A = 'A', M = 26, Z = 'Z';
+
   public Deck key;
 
   public SolitaireCipher(Deck key) {
@@ -13,9 +15,7 @@ public class SolitaireCipher {
   public int[] getKeystream(int size) {
     int[] keystream = new int[size];
 
-    for (int i = 0; i < size; ++i) {
-      keystream[i] = key.generateNextKeystreamValue();
-    }
+    for (int i = 0; i < size; ++i) keystream[i] = key.generateNextKeystreamValue();
 
     return keystream;
   }
@@ -24,19 +24,17 @@ public class SolitaireCipher {
    * Encodes the input message using the algorithm described in the pdf.
    */
   public String encode(String msg) {
-    String filtered = "";
+    String temp = msg.toUpperCase(), result = "";
 
-    for (int i = 0; i < msg.length(); ++i) {
-      if (Character.isLetter(msg.charAt(i))) filtered += Character.toUpperCase(msg.charAt(i));
-    }
+    for (int i = 0; i < temp.length(); ++i)
+      if (temp.charAt(i) >= A && temp.charAt(i) <= Z) result += temp.charAt(i);
 
-    int[] keystream = getKeystream(12);
+    int[] keystream = getKeystream(result.length());
 
     String encoded = "";
 
-    for (int i = 0; i < keystream.length; ++i) {
-      encoded += (filtered.charAt(i) + keystream[i] - 'A') % 26 + 'A';
-    }
+    for (int i = 0; i < keystream.length; ++i)
+      encoded += (char) ((result.charAt(i) - A + (keystream[i] % M) + M) % M + A);
 
     return encoded;
   }
@@ -45,13 +43,12 @@ public class SolitaireCipher {
    * Decodes the input message using the algorithm described in the pdf.
    */
   public String decode(String msg) {
-    int[] keystream = getKeystream(12);
+    int[] keystream = getKeystream(msg.length());
 
     String decoded = "";
 
-    for (int i = 0; i < keystream.length; ++i) {
-      decoded += (msg.charAt(i) - keystream[i] - 'A') % 26 + 'A';
-    }
+    for (int i = 0; i < keystream.length; ++i)
+      decoded += (char) ((msg.charAt(i) - A + (-keystream[i] % M) + M) % M + A);
 
     return decoded;
   }
