@@ -1,5 +1,6 @@
 package a2;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -916,6 +917,94 @@ class Shuffle_Three implements Runnable {
   }
 }
 
+class CreateDeck1 implements Runnable {
+  public void run() {
+    Deck deck = new Deck(4, 3);
+
+    if (deck.numOfCards != 14) {
+      throw new AssertionError("Deck is empty when it should have 14 cards");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class CreateDeck2 implements Runnable {
+  public void run() {
+
+    Deck deck1 = new Deck();
+    Deck.PlayingCard card1 = deck1.new PlayingCard("clubs", 1); // AC
+    Deck.PlayingCard card2 = deck1.new PlayingCard("clubs", 2); // 2C
+    Deck.PlayingCard card3 = deck1.new PlayingCard("diamonds", 1); // AD
+    Deck.PlayingCard card4 = deck1.new PlayingCard("diamonds", 2); // 2D
+    Deck.Joker rJoker = deck1.new Joker("red"); // RJ
+    Deck.Joker bJoker = deck1.new Joker("black"); // BJ
+    deck1.addCard(card1);
+    deck1.addCard(card2);
+    deck1.addCard(card3);
+    deck1.addCard(card4);
+    deck1.addCard(rJoker);
+    deck1.addCard(bJoker); // AC 2C AD 2D RJ BJ
+
+    Deck deck2 = new Deck(2, 2); // AC 2C AD 2D RJ BJ
+
+    if (deck1.head.getValue() != deck2.head.getValue()) {
+      throw new AssertionError("Head of the deck is incorrect");
+    }
+
+    for (int i = 1; i < deck1.numOfCards + 1; i++) {
+      if (deck1.head.getValue() != deck2.head.getValue()) {
+        throw new AssertionError(
+            "The deck is not correctly created."
+                + "The card at position "
+                + i
+                + " (and/or after) is incorrect.");
+      }
+      deck1.head = deck1.head.next;
+      deck2.head = deck2.head.next;
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class CreateDeck3 implements Runnable {
+  @Override
+  public void run() {
+    // checking if exception is thrown by the constructor
+    try {
+      Deck deck1 = new Deck(14, 1);
+    } catch (IllegalArgumentException raiseException) {
+      System.out.println("assignment2.Test passed.");
+    }
+
+    try {
+      Deck deck1 = new Deck(2, 6);
+    } catch (IllegalArgumentException raiseException) {
+      System.out.println("assignment2.Test passed.");
+    }
+  }
+}
+
+class DeepCopyDeck1 implements Runnable {
+  public void run() {
+    // creating and copying an empty deck
+    Deck deck = new Deck();
+    Deck copy = new Deck(deck);
+
+    if (!(deck.head == null && copy.head == null)) {
+      throw new AssertionError(
+          "An empty deck is not being initialized with default values."
+              + "The head of the deck and copy deck should be null.");
+    }
+
+    if (!(deck.numOfCards == 0 && copy.numOfCards == 0)) {
+      throw new AssertionError(
+          "An empty deck is not being initialized with default values."
+              + "The number of cards in the deck and copy deck should be 0.");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
 class TripleCut1 implements Runnable {
   @Override
   public void run() {
@@ -1019,6 +1108,44 @@ class TripleCut3 implements Runnable {
     if (!(head && tail)) {
       throw new AssertionError("The head/tail is incorrect");
     } else if (!(c1Ref && c2Ref && c3Red && c4ref && c5Ref && c6Ref)) {
+      throw new AssertionError("The pointers of the cards are incorrect");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class TripleCut4 implements Runnable {
+  @Override
+  public void run() {
+    // For the edge case of tripleCut() there are three cards and firstCard
+    // and secondCard are the same
+
+    Deck deck = new Deck();
+    Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); // AC
+    Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); // 2C
+    Deck.Card c3 = deck.new PlayingCard(Deck.suitsInOrder[2], 1); // AH
+
+    deck.addCard(c1);
+    deck.addCard(c2);
+    deck.addCard(c3);
+
+    // Before:
+    // head = c1, c2, c3
+    // AC, 2C, AH
+    deck.tripleCut(c2, c2);
+    // Expected deck arrangement:
+    // head = c3, c2, c1
+    // AH, 2C, AC
+
+    boolean head = deck.head == c3;
+    boolean tail = deck.head.prev == c1;
+    boolean c1Ref = c1.prev == c2 && c1.next == c3;
+    boolean c2Ref = c2.prev == c3 && c2.next == c1;
+    boolean c3Ref = c3.prev == c1 && c3.next == c2;
+
+    if (!(head && tail)) {
+      throw new AssertionError("The head/tail is incorrect");
+    } else if (!(c1Ref && c2Ref && c3Ref)) {
       throw new AssertionError("The pointers of the cards are incorrect");
     }
     System.out.println("assignment2.Test passed.");
@@ -1163,9 +1290,9 @@ class GenerateNextKeystreamValue1 implements Runnable {
 
     if (value != 4) {
       throw new AssertionError(
-          "The method generateNextKeystreamValue() is not returning the correct value. Expected"
-              + " value is 4 but got "
-              + deck.generateNextKeystreamValue());
+          "The method generateNextKeystreamValue() "
+              + "is not returning the correct value. Expected value is 4 but got "
+              + value);
     }
     System.out.println("assignment2.Test passed.");
   }
@@ -1184,11 +1311,10 @@ class GenerateNextKeystreamValue2 implements Runnable {
 
     if (value != 1) {
       throw new AssertionError(
-          "The method generateNextKeystreamValue() is not returning the correct value. Expected"
-              + " value is 1 but got "
-              + deck.generateNextKeystreamValue());
+          "The method generateNextKeystreamValue() is "
+              + "not returning the correct value. Expected value is 1 but got "
+              + value);
     } else if (deck.head != deck.locateJoker("red")) {
-      System.out.println(deck);
       throw new AssertionError("Incorrect head after generateNextKeystreamValue()");
     }
     System.out.println("assignment2.Test passed.");
@@ -1208,9 +1334,9 @@ class GenerateNextKeystreamValue3 implements Runnable {
 
     if (value != 2) {
       throw new AssertionError(
-          "The method generateNextKeystreamValue() is not returning the correct value. Expected"
-              + " value is 2 but got "
-              + deck.generateNextKeystreamValue());
+          "The method generateNextKeystreamValue() is "
+              + "not returning the correct value. Expected value is 2 but got "
+              + value);
     } else if (deck.head.getValue() != 14) {
       throw new AssertionError("Incorrect head after generateNextKeystreamValue()");
     }
@@ -1243,13 +1369,188 @@ class GenerateNextKeystreamValue4 implements Runnable {
 
     if (value != 16) {
       throw new AssertionError(
-          "The method generateNextKeystreamValue() is not returning the correct value. Expected"
-              + " value is 2 but got "
-              + deck.generateNextKeystreamValue());
+          "The method generateNextKeystreamValue() is "
+              + "not returning the correct value. Expected value is 16 but got "
+              + value);
     } else if (deck.head.getValue() != 16) {
       throw new AssertionError("Incorrect head after generateNextKeystreamValue()");
     }
-    System.out.println("Test passed!");
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+// =========================== SOLITAIRE CIPHER ================================
+
+class GetKeystream1 implements Runnable {
+  @Override
+  public void run() {
+    // example case from the last page of pdf
+
+    Deck deck = new Deck(5, 2);
+    // AC 2C 3C 4C 5C AD 2D 3D 4D 5D RJ BJ
+
+    int seed = 10;
+    Deck.gen.setSeed(seed);
+    deck.shuffle(); // 3C 3D AD 5C BJ 2C 2D 4D AC RJ 4C 5D
+
+    SolitaireCipher cipher = new SolitaireCipher(deck);
+    int[] keystream = cipher.getKeystream(12);
+
+    int[] expected = {4, 4, 15, 3, 3, 2, 1, 14, 16, 17, 17, 14};
+
+    if (!Arrays.equals(keystream, expected)) {
+      throw new AssertionError("The method getKeystream() is not returning the correct keystream");
+    }
+
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class GetKeystream2 implements Runnable {
+  @Override
+  public void run() {
+    Deck deck1 = new Deck(12, 2);
+
+    int seed = 429;
+    Deck.gen.setSeed(seed);
+    deck1.shuffle();
+
+    SolitaireCipher cipher1 = new SolitaireCipher(deck1);
+    int[] keystream1 = cipher1.getKeystream(5);
+
+    SolitaireCipher cipher2 = new SolitaireCipher(deck1);
+    int[] keystream2 = cipher2.getKeystream(5);
+
+    if (!Arrays.equals(keystream1, keystream2)) {
+      throw new AssertionError(
+          "The keystream values of the 2 ciphers are not the same. "
+              + "\nExpected: [8, 10, 21, 16, 21] for both. \nGot "
+              + Arrays.toString(keystream1)
+              + " for keystream1 and "
+              + Arrays.toString(keystream2)
+              + " for keystream2");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class EncodingAndDecodingTest1 implements Runnable {
+  @Override
+  public void run() {
+    Deck deck = new Deck(5, 3);
+    String message = "Heya! Love", decodedMessage = "HEYALOVE";
+
+    SolitaireCipher cipher = new SolitaireCipher(deck);
+    String encodedMessage = (cipher.encode(message));
+
+    cipher = new SolitaireCipher(deck);
+    String decodeAttempt = cipher.decode(encodedMessage);
+
+    if (!decodeAttempt.equals(decodedMessage)) {
+      throw new AssertionError(
+          "Error encoding/ decoding. \n Expected encoded message: LVQCZRNF. I received "
+              + encodedMessage
+              + "\n"
+              + "Expected decode output: HEYALOVE. I received: "
+              + decodeAttempt);
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class EncodingAndDecodingTest2 implements Runnable {
+  @Override
+  public void run() {
+    Deck deck = new Deck(1, 1);
+    String message = "Heya! L%$@!%:ove(!#%$", decodedMessage = "HEYALOVE";
+
+    SolitaireCipher cipher = new SolitaireCipher(deck);
+    String encodedMessage = (cipher.encode(message));
+
+    cipher = new SolitaireCipher(deck);
+    String decodeAttempt = cipher.decode(encodedMessage);
+
+    if (!decodeAttempt.equals(decodedMessage)) {
+      throw new AssertionError(
+          "Error encoding/ decoding. \n Expected encoded message: IFZBMPWF. I received "
+              + encodedMessage
+              + "\n"
+              + "Expected decode output: HEYALOVE. I received: "
+              + decodeAttempt);
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class SolitaireCipher1 implements Runnable {
+  @Override
+  public void run() {
+    Deck deck = new Deck(5, 2);
+    // AC 2C 3C 4C 5C AD 2D 3D 4D 5D RJ BJ
+
+    int seed = 123;
+    Deck.gen.setSeed(seed);
+    deck.shuffle(); // AD RJ 2C 4C 3D AC 5C BJ 4D 2D 5D 3C
+
+    String message = "You are amazing!", message2 = "YOUAREAMAZING";
+
+    SolitaireCipher cipher = new SolitaireCipher(deck);
+    int[] keystream = cipher.getKeystream(message2.length());
+    int[] expected = {2, 4, 15, 16, 15, 4, 4, 16, 4, 3, 4, 1, 5};
+
+    SolitaireCipher cipher1 = new SolitaireCipher(deck);
+    String encodedMessage = cipher1.encode(message);
+    // The expected keystream should be the same keystream used by the cipher1 for encoding
+
+    SolitaireCipher cipher2 = new SolitaireCipher(deck);
+    String decodedMessage = cipher2.decode(encodedMessage);
+    // The expected keystream should be the same keystream used by the cipher2 for decoding
+
+    if (!Arrays.equals(keystream, expected)) {
+      throw new AssertionError("The method getKeystream() is not returning the correct keystream");
+    }
+
+    if (!encodedMessage.equals("ASJQGIECECMOL")) {
+      throw new AssertionError("The encoded message is not correct");
+    }
+    if (!decodedMessage.equals(message2)) {
+      throw new AssertionError("The decoded message is not correct");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
+class SolitaireCipher2 implements Runnable {
+  @Override
+  public void run() {
+    Deck deck = new Deck(2, 1);
+
+    int seed = 1234;
+    Deck.gen.setSeed(seed);
+    deck.shuffle();
+
+    String message = "mari[o]  a(n)d><{lu~/ig}i", message2 = "MARIOANDLUIGI";
+
+    SolitaireCipher cipher = new SolitaireCipher(deck);
+    int[] keystream = cipher.getKeystream(message2.length());
+    int[] expected = {1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1};
+
+    SolitaireCipher cipher1 = new SolitaireCipher(deck);
+    SolitaireCipher cipher2 = new SolitaireCipher(deck);
+
+    String encodedMessage = cipher1.encode(message);
+    String decodedMessage = cipher2.decode(encodedMessage);
+
+    if (!Arrays.equals(keystream, expected)) {
+      throw new AssertionError("The method getKeystream() is not returning the correct keystream");
+    }
+    if (!(encodedMessage.equals("NBTKPBPFMVKIJ"))) {
+      throw new AssertionError("The encoded message is not correct");
+    }
+    if (!decodedMessage.equals(message2)) {
+      throw new AssertionError("The decoded message is not correct");
+    }
+    System.out.println("assignment2.Test passed.");
   }
 }
 
@@ -1280,9 +1581,14 @@ public class Tester {
     "a2.Shuffle_NewCard",
     "a2.Shuffle_SingleCard",
     "a2.Shuffle_Three",
+    "a2.CreateDeck1",
+    "a2.CreateDeck2",
+    "a2.CreateDeck3",
+    "a2.DeepCopyDeck1",
     "a2.TripleCut1",
     "a2.TripleCut2",
     "a2.TripleCut3",
+    "a2.TripleCut4",
     "a2.CountCut1",
     "a2.CountCut2",
     "a2.CountCut3",
@@ -1291,7 +1597,13 @@ public class Tester {
     "a2.GenerateNextKeystreamValue1",
     "a2.GenerateNextKeystreamValue2",
     "a2.GenerateNextKeystreamValue3",
-    "a2.GenerateNextKeystreamValue4"
+    "a2.GenerateNextKeystreamValue4",
+    "a2.GetKeystream1",
+    "a2.GetKeystream2",
+    "a2.EncodingAndDecodingTest1",
+    "a2.EncodingAndDecodingTest2",
+    "a2.SolitaireCipher1",
+    "a2.SolitaireCipher2",
   };
 
   public static void run() {
