@@ -1239,6 +1239,21 @@ class CountCut3 implements Runnable {
   }
 }
 
+class CountCut4 implements Runnable {
+  @Override
+  public void run() {
+    // when the deck is empty
+    Deck deck = new Deck();
+
+    deck.countCut(); // should do nothing
+
+    if (!(deck.head == null)) {
+      throw new AssertionError("The method countCut() is not handling the case of an empty deck");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
 class LocateJoker1 implements Runnable {
   @Override
   public void run() {
@@ -1595,6 +1610,7 @@ public class Tester {
     "a2.CountCut1",
     "a2.CountCut2",
     "a2.CountCut3",
+    "a2.CountCut4",
     "a2.LocateJoker1",
     "a2.LocateJoker2",
     "a2.GenerateNextKeystreamValue1",
