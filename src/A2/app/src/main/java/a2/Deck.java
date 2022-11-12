@@ -46,12 +46,10 @@ public class Deck {
     if (numOfCardsPerSuit < MIN_CARDS_PER_SUIT
         || numOfCardsPerSuit > MAX_CARDS_PER_SUIT
         || numOfSuits < MIN_NUM_OF_SUITS
-        || numOfSuits > MAX_NUM_OF_SUITS)
-      throw new IllegalArgumentException();
+        || numOfSuits > MAX_NUM_OF_SUITS) throw new IllegalArgumentException();
 
     for (int i = 0; i < numOfSuits; ++i)
-      for (int j = 1; j <= numOfCardsPerSuit; ++j)
-        addCard(new PlayingCard(suitsInOrder[i], j));
+      for (int j = 1; j <= numOfCardsPerSuit; ++j) addCard(new PlayingCard(suitsInOrder[i], j));
 
     addCard(new Joker("red"));
     addCard(new Joker("black"));
@@ -106,8 +104,7 @@ public class Deck {
 
     clear();
 
-    for (int i = 0; i < cards.length; ++i)
-      addCard(cards[i]);
+    for (int i = 0; i < cards.length; ++i) addCard(cards[i]);
   }
 
   /*
@@ -145,8 +142,7 @@ public class Deck {
   public void moveCard(Card c, int p) {
     Card curr = c;
 
-    for (int i = 0; i < p; ++i)
-      curr = curr.next;
+    for (int i = 0; i < p; ++i) curr = curr.next;
 
     remove(c);
 
@@ -166,8 +162,7 @@ public class Deck {
   public void tripleCut(Card left, Card right) {
     Card h = head, t = head.prev;
 
-    if (left == null || (left == h && right == t))
-      return;
+    if (left == null || (left == h && right == t)) return;
 
     if (right == t) {
       head = left;
@@ -203,16 +198,13 @@ public class Deck {
   public void countCut() {
     Card curr = head;
 
-    if (numOfCards == 0)
-      return;
+    if (numOfCards == 0) return;
 
     int value = head.prev.getValue() % numOfCards;
 
-    if (value == 0 || (numOfCards - 1) == value)
-      return;
+    if (value == 0 || (numOfCards - 1) == value) return;
 
-    for (int i = 0; i < value - 1; i++)
-      curr = curr.next;
+    for (int i = 0; i < value - 1; i++) curr = curr.next;
 
     Card nh = curr.next, nt = curr;
     Card ot = head.prev, oh = head;
@@ -271,8 +263,7 @@ public class Deck {
 
     Card first = head;
 
-    while (first != redJoker && first != blackJoker)
-      first = first.next;
+    while (first != redJoker && first != blackJoker) first = first.next;
 
     tripleCut(first, first == redJoker ? blackJoker : redJoker);
 
@@ -350,6 +341,7 @@ public class Deck {
     public Card prev;
 
     public abstract Card getCopy();
+
     public abstract int getValue();
   }
 

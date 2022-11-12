@@ -20,8 +20,7 @@ public class SolitaireCipher {
   public int[] getKeystream(int size) {
     int[] keystream = new int[size];
 
-    for (int i = 0; i < size; ++i)
-      keystream[i] = key.generateNextKeystreamValue();
+    for (int i = 0; i < size; ++i) keystream[i] = key.generateNextKeystreamValue();
 
     return keystream;
   }
@@ -33,8 +32,7 @@ public class SolitaireCipher {
     String temp = msg.toUpperCase(), result = "";
 
     for (int i = 0; i < temp.length(); ++i)
-      if (temp.charAt(i) >= A && temp.charAt(i) <= Z)
-        result += temp.charAt(i);
+      if (temp.charAt(i) >= A && temp.charAt(i) <= Z) result += temp.charAt(i);
 
     int[] keystream = getKeystream(result.length());
 

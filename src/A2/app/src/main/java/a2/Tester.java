@@ -1009,6 +1009,38 @@ class DeepCopyDeck1 implements Runnable {
   }
 }
 
+class MoveCard1 implements Runnable {
+  public void run() {
+    // for when a joker is the head
+    Deck deck = new Deck();
+    Deck.Joker rjoker = deck.new Joker("red");
+    Deck.PlayingCard card1 = deck.new PlayingCard("clubs", 1);
+    Deck.PlayingCard card2 = deck.new PlayingCard("clubs", 2);
+    Deck.Joker bjoker = deck.new Joker("black");
+    Deck.PlayingCard card3 = deck.new PlayingCard("diamonds", 1);
+    Deck.PlayingCard card4 = deck.new PlayingCard("diamonds", 2);
+
+    deck.addCard(rjoker);
+    deck.addCard(card1);
+    deck.addCard(card2);
+    deck.addCard(bjoker);
+    deck.addCard(card3);
+    deck.addCard(card4); // RJ AC 2C BJ AD 2D
+
+    deck.moveCard(rjoker, 4); // Expected Outcome: RJ 2D AC 2C BJ AD
+
+    boolean rjRef = deck.head.next == card4 && deck.head.prev == card3;
+
+    if (deck.head != rjoker) {
+      throw new AssertionError("The head of the deck is changing from RJ to " + deck.head);
+    }
+    if (!rjRef) {
+      throw new AssertionError("References of the Head (RJ) are not correct.");
+    }
+    System.out.println("assignment2.Test passed.");
+  }
+}
+
 class TripleCut1 implements Runnable {
   @Override
   public void run() {
@@ -1603,6 +1635,7 @@ public class Tester {
     "a2.CreateDeck2",
     "a2.CreateDeck3",
     "a2.DeepCopyDeck1",
+    "a2.MoveCard1",
     "a2.TripleCut1",
     "a2.TripleCut2",
     "a2.TripleCut3",
