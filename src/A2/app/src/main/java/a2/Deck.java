@@ -3,16 +3,16 @@ package a2;
 import java.util.Random;
 
 public class Deck {
-  public static String[] suitsInOrder = {"clubs", "diamonds", "hearts", "spades"};
-  public static Random gen = new Random();
-
-  public Card head;
-  public int numOfCards;
-
   private final int MAX_CARDS_PER_SUIT = 13;
   private final int MAX_NUM_OF_SUITS = 4;
   private final int MIN_CARDS_PER_SUIT = 1;
   private final int MIN_NUM_OF_SUITS = 1;
+
+  public static Random gen = new Random();
+  public static String[] suitsInOrder = {"clubs", "diamonds", "hearts", "spades"};
+
+  public Card head;
+  public int numOfCards;
 
   /*
    * The default constructor.
@@ -46,15 +46,12 @@ public class Deck {
     if (numOfCardsPerSuit < MIN_CARDS_PER_SUIT
         || numOfCardsPerSuit > MAX_CARDS_PER_SUIT
         || numOfSuits < MIN_NUM_OF_SUITS
-        || numOfSuits > MAX_NUM_OF_SUITS) {
+        || numOfSuits > MAX_NUM_OF_SUITS)
       throw new IllegalArgumentException();
-    }
 
-    for (int i = 0; i < numOfSuits; ++i) {
-      for (int j = 1; j <= numOfCardsPerSuit; ++j) {
+    for (int i = 0; i < numOfSuits; ++i)
+      for (int j = 1; j <= numOfCardsPerSuit; ++j)
         addCard(new PlayingCard(suitsInOrder[i], j));
-      }
-    }
 
     addCard(new Joker("red"));
     addCard(new Joker("black"));
@@ -87,7 +84,7 @@ public class Deck {
    * number of cards in the deck.
    */
   public void shuffle() {
-    Card[] arr = new Card[numOfCards];
+    Card[] cards = new Card[numOfCards];
 
     Card curr = head;
 
@@ -96,22 +93,21 @@ public class Deck {
     int index = 0;
 
     do {
-      arr[index++] = curr;
+      cards[index++] = curr;
       curr = curr.next;
     } while (curr != head);
 
-    for (int i = arr.length - 1; i > 0; --i) {
+    for (int i = cards.length - 1; i > 0; --i) {
       int j = gen.nextInt(i + 1);
-      Card temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
+      Card temp = cards[i];
+      cards[i] = cards[j];
+      cards[j] = temp;
     }
 
     clear();
 
-    for (int i = 0; i < arr.length; ++i) {
-      addCard(arr[i]);
-    }
+    for (int i = 0; i < cards.length; ++i)
+      addCard(cards[i]);
   }
 
   /*
@@ -120,6 +116,8 @@ public class Deck {
    *
    * This method runs in O(n), where n is the total number of cards
    * in the deck.
+   *
+   * @return The located joker, or null if no joker was found.
    */
   public Joker locateJoker(String color) {
     Card curr = head;
@@ -147,9 +145,8 @@ public class Deck {
   public void moveCard(Card c, int p) {
     Card curr = c;
 
-    for (int i = 0; i < p; ++i) {
+    for (int i = 0; i < p; ++i)
       curr = curr.next;
-    }
 
     remove(c);
 
@@ -169,22 +166,31 @@ public class Deck {
   public void tripleCut(Card left, Card right) {
     Card h = head, t = head.prev;
 
-    // Don't need to change anything
-    if (left == null || (left == h && right == t)) return;
+    if (left == null || (left == h && right == t))
+      return;
 
-    if (left == h) head = right.next;
-    else if (right == t) head = left;
-    else {
-      Card a = left.prev, b = right.next;
-      left.prev = t;
-      t.next = left;
-      right.next = h;
-      h.prev = right;
-      head = b;
-      head.prev = a;
-      a.next = b;
-      b.prev = a;
+    if (right == t) {
+      head = left;
+      return;
     }
+
+    if (left == h) {
+      head = right.next;
+      return;
+    }
+
+    Card a = left.prev, b = right.next;
+
+    h.prev = right;
+    right.next = h;
+
+    t.next = left;
+    left.prev = t;
+
+    a.next = b;
+    b.prev = a;
+
+    head = b;
   }
 
   /*
@@ -197,25 +203,28 @@ public class Deck {
   public void countCut() {
     Card curr = head;
 
-    if (numOfCards == 0) return;
+    if (numOfCards == 0)
+      return;
 
     int value = head.prev.getValue() % numOfCards;
 
-    if (value == 0 || (numOfCards - 1) == value) return;
+    if (value == 0 || (numOfCards - 1) == value)
+      return;
 
-    for (int i = 0; i < value - 1; i++) curr = curr.next;
+    for (int i = 0; i < value - 1; i++)
+      curr = curr.next;
 
-    Card ot = head.prev, oh = head;
     Card nh = curr.next, nt = curr;
+    Card ot = head.prev, oh = head;
 
-    nh.prev = curr;
-    curr.next = nh;
-    ot.prev.next = oh;
     oh.prev = ot.prev;
-    nt.next = ot;
-    ot.prev = nt;
+    ot.prev.next = oh;
+
     nh.prev = ot;
     ot.next = nh;
+
+    nt.next = ot;
+    ot.prev = nt;
 
     head = nh;
   }
@@ -227,6 +236,8 @@ public class Deck {
    * the Card found.
    *
    * This method runs in O(n).
+   *
+   * @return The found card, or null if its a joker.
    */
   public Card lookUpCard() {
     Card top = head;
@@ -246,6 +257,8 @@ public class Deck {
    * using this deck.
    *
    * This method runs in O(n).
+   *
+   * @return The next keystream value.
    */
   public int generateNextKeystreamValue() {
     Joker redJoker = locateJoker("red");
@@ -258,9 +271,8 @@ public class Deck {
 
     Card first = head;
 
-    while (first != redJoker && first != blackJoker) {
+    while (first != redJoker && first != blackJoker)
       first = first.next;
-    }
 
     tripleCut(first, first == redJoker ? blackJoker : redJoker);
 
@@ -268,11 +280,7 @@ public class Deck {
 
     Card curr = lookUpCard();
 
-    if (curr == null) {
-      return generateNextKeystreamValue();
-    }
-
-    return curr.getValue();
+    return curr == null ? generateNextKeystreamValue() : curr.getValue();
   }
 
   /*
@@ -283,7 +291,7 @@ public class Deck {
    *
    * @card c The card to remove
    */
-  public void remove(Card c) {
+  private void remove(Card c) {
     c.next.prev = c.prev;
     c.prev.next = c.next;
   }
@@ -297,7 +305,7 @@ public class Deck {
    * @param c The card to insert another one after
    * @param toInsert The card to insert
    */
-  public void insertAfter(Card c, Card toInsert) {
+  private void insertAfter(Card c, Card toInsert) {
     toInsert.next = c.next;
     c.next.prev = toInsert;
     toInsert.prev = c;
@@ -309,7 +317,7 @@ public class Deck {
    *
    * This method runs in O(1).
    */
-  public void clear() {
+  private void clear() {
     head = null;
     numOfCards = 0;
   }
@@ -342,7 +350,6 @@ public class Deck {
     public Card prev;
 
     public abstract Card getCopy();
-
     public abstract int getValue();
   }
 
