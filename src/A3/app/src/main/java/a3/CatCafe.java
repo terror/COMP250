@@ -94,7 +94,7 @@ public class CatCafe implements Iterable<Cat> {
    * order based on their fur thickness.
    *
    * @param numOfCatsToHonor
-   * @return TODO
+   * @return The cat hall of hame.
    */
   public ArrayList<Cat> buildHallOfFame(int numOfCatsToHonor) {
     return buildHallOfFameHelper(root, numOfCatsToHonor, new ArrayList<Cat>());
