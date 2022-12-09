@@ -755,6 +755,56 @@ class shallow_copy3 implements Runnable {
   }
 }
 
+class shallow_copy4 implements Runnable {
+  @Override
+  public void run() {
+    Cat A = new Cat("A", 10, 40, 5, 85.0);
+    Cat B = new Cat("B", 15, 20, 2, 250.0);
+    Cat C = new Cat("C", 18, 28, 12, 30.0);
+    Cat D = new Cat("D", 12, 45, 5, 85.0);
+
+    CatCafe cafe = new CatCafe();
+    cafe.hire(A);
+    cafe.hire(B);
+    cafe.hire(C);
+    cafe.hire(D);
+
+    cafe.retire(B);
+
+    CatCafe copy = new CatCafe(cafe);
+
+    if ((copy == cafe)) {
+      System.out.println("Shallow copy did not create a new CatCafe object");
+    }
+
+    boolean CatNodeA = copy.root.senior == cafe.root.senior;
+    boolean CatNodeB = copy.root.junior == cafe.root.junior;
+    boolean CatNodeD = copy.root == cafe.root;
+    boolean CatNodeNull = copy.root.junior.senior == null && cafe.root.junior.senior == null;
+
+    if (CatNodeA || CatNodeD || CatNodeB) {
+      throw new AssertionError("Shallow copy did not create new CatNode objects");
+    }
+
+    boolean CatA = copy.root.senior.catEmployee == A && cafe.root.senior.catEmployee == A;
+    boolean CatB = copy.root.junior.catEmployee == C && cafe.root.junior.catEmployee == C;
+    boolean CatD = copy.root.catEmployee == D && cafe.root.catEmployee == D;
+
+    if (!(CatA || CatB || CatD)) {
+      throw new AssertionError(
+          "Shallow copy created new Cat objects or the tree structure is incorrect.");
+    }
+
+    if (!CatNodeNull) {
+      throw new AssertionError(
+          "Incorrect tree structure. root.junior.senior should be null for "
+              + "both the original and the copy.");
+    }
+
+    System.out.println("Test passed");
+  }
+}
+
 class hire_rotation1 implements Runnable {
   public void run() {
     // example in the pdf
@@ -1421,6 +1471,37 @@ class retire_edgeCase9 implements Runnable {
   }
 }
 
+class retire_edgeCase10 implements Runnable {
+  @Override
+  public void run() {
+    Cat B = new Cat("Buttercup", 45, 53, 5, 85.0);
+    Cat JJ = new Cat("JIJI", 156, 17, 1, 30.0);
+
+    CatCafe cafe = new CatCafe();
+    cafe.hire(B);
+    cafe.hire(JJ);
+
+    CatCafe.CatNode nodeReturned = cafe.root.junior.retire(JJ);
+
+    if (!(nodeReturned == null)) {
+      throw new AssertionError(
+          "Retire must return null when called on the same node as the "
+              + "cat but got "
+              + nodeReturned);
+    }
+
+    if (cafe.root.junior == null) {
+      throw new AssertionError("Retire must not change the tree");
+    }
+
+    if (!(cafe.root.catEmployee == B)) {
+      throw new AssertionError("The root after retire must remain the same (Cat B).");
+    }
+
+    System.out.println("Test passed.");
+  }
+}
+
 class hire_retire1 implements Runnable {
   @Override
   public void run() {
@@ -1831,7 +1912,7 @@ class budgetGroomingExpenses5 implements Runnable {
       throw new AssertionError(
           "budgetGroomingExpense() did not work properly."
               + "\n Expected 95.0 but got "
-              + cafe.budgetGroomingExpenses(5));
+              + cafe.budgetGroomingExpenses(1));
     }
 
     System.out.println("Test passed.");
@@ -1860,7 +1941,7 @@ class iterator1 implements Runnable {
 
     Stack<Cat> actual = new Stack<>();
 
-    for (var cat : cafe) {
+    for (Cat cat : cafe) {
       if (cat == null) {
         throw new AssertionError("The iterator should not return null.");
       }
@@ -1902,6 +1983,209 @@ class iterator2 implements Runnable {
   }
 }
 
+class getGroomingSchedule1 implements Runnable {
+  @Override
+  public void run() {
+    // testing for when one cat has 0 days (must be included in week 0)
+    Cat A = new Cat("A", 30, 50, 0, 85.0);
+    Cat B = new Cat("B", 20, 30, 3, 250.0);
+    Cat C = new Cat("C", 25, 20, 17, 30.0);
+    Cat D = new Cat("D", 10, 25, 20, 30.0);
+    Cat E = new Cat("E", 38, 60, 1, 30.0);
+
+    CatCafe cafe = new CatCafe();
+    cafe.hire(A);
+    cafe.hire(B);
+    cafe.hire(C);
+    cafe.hire(D);
+    cafe.hire(E);
+
+    ArrayList<ArrayList<Cat>> expected = new ArrayList<>();
+    ArrayList<Cat> week0 = new ArrayList<>();
+    ArrayList<Cat> week1 = new ArrayList<>();
+    ArrayList<Cat> week2 = new ArrayList<>();
+
+    week0.add(E);
+    week0.add(A);
+    week0.add(B);
+    week2.add(C);
+    week2.add(D);
+
+    expected.add(week0);
+    expected.add(week1);
+    expected.add(week2);
+
+    ArrayList<ArrayList<Cat>> result = cafe.getGroomingSchedule();
+
+    if (expected.size() != result.size()) {
+      System.out.println("Expected : " + expected);
+      System.out.println("Got : " + result);
+      throw new AssertionError(
+          "Test failed for grooming schedule. size of output array does not match size of expected"
+              + " output");
+    }
+    for (int i = 0; i < 3; i += 1) {
+      ArrayList<Cat> expectedCat = expected.get(i);
+      ArrayList<Cat> resultCat = result.get(i);
+
+      for (int j = 0; j < expectedCat.size(); j++) {
+        if (!(expectedCat.get(j).equals(resultCat.get(j)))) {
+          throw new AssertionError(
+              "Test failed for grooming schedule. Expected "
+                  + expectedCat.toString()
+                  + " in week "
+                  + i
+                  + " but got "
+                  + resultCat.toString());
+        }
+      }
+    }
+    System.out.println("Test passed.");
+  }
+}
+
+class getGroomingSchedule2 implements Runnable {
+  @Override
+  public void run() {
+    // testing for when one cat has 7 and 14 days (must be included in week 1 and 2 respectively)
+    Cat A = new Cat("A", 30, 50, 5, 85.0);
+    Cat B = new Cat("B", 20, 30, 7, 250.0);
+    Cat C = new Cat("C", 25, 20, 12, 30.0);
+    Cat D = new Cat("D", 10, 25, 14, 30.0);
+    Cat E = new Cat("E", 38, 60, 20, 30.0);
+
+    CatCafe cafe = new CatCafe();
+    cafe.hire(A);
+    cafe.hire(B);
+    cafe.hire(C);
+    cafe.hire(D);
+    cafe.hire(E);
+
+    ArrayList<ArrayList<Cat>> expected = new ArrayList<>();
+    ArrayList<Cat> week0 = new ArrayList<>();
+    ArrayList<Cat> week1 = new ArrayList<>();
+    ArrayList<Cat> week2 = new ArrayList<>();
+
+    week0.add(A);
+    week1.add(C);
+    week1.add(B);
+    week2.add(E);
+    week2.add(D);
+
+    expected.add(week0);
+    expected.add(week1);
+    expected.add(week2);
+
+    ArrayList<ArrayList<Cat>> result = cafe.getGroomingSchedule();
+
+    if (expected.size() != result.size()) {
+      System.out.println("Expected : " + expected);
+      System.out.println("Got : " + result);
+      throw new AssertionError(
+          "Test failed for grooming schedule. size of output array does not match size of expected"
+              + " output");
+    }
+    for (int i = 0; i < 3; i += 1) {
+      ArrayList<Cat> expectedCat = expected.get(i);
+      ArrayList<Cat> resultCat = result.get(i);
+
+      for (int j = 0; j < expectedCat.size(); j++) {
+        if (!(expectedCat.get(j).equals(resultCat.get(j)))) {
+          throw new AssertionError(
+              "Test failed for grooming schedule. Expected "
+                  + expectedCat.toString()
+                  + " in week "
+                  + i
+                  + " but got "
+                  + resultCat.toString());
+        }
+      }
+    }
+    System.out.println("Test passed.");
+  }
+}
+
+class getGroomingSchedule3 implements Runnable {
+  @Override
+  public void run() {
+    Cat A = new Cat("A", 30, 50, 5, 85.0);
+    Cat B = new Cat("B", 20, 30, 12, 250.0);
+    Cat C = new Cat("C", 25, 20, 14, 30.0);
+    Cat D = new Cat("D", 10, 25, 16, 30.0);
+    Cat E = new Cat("E", 38, 60, 21, 30.0);
+
+    CatCafe cafe = new CatCafe();
+    cafe.hire(A);
+    cafe.hire(B);
+    cafe.hire(C);
+    cafe.hire(D);
+    cafe.hire(E);
+
+    cafe.retire(A);
+    cafe.retire(B);
+
+    ArrayList<ArrayList<Cat>> expected = new ArrayList<>();
+    ArrayList<Cat> week0 = new ArrayList<>();
+    ArrayList<Cat> week1 = new ArrayList<>();
+    ArrayList<Cat> week2 = new ArrayList<>();
+    ArrayList<Cat> week3 = new ArrayList<>();
+
+    week2.add(C);
+    week2.add(D);
+    week3.add(E);
+
+    expected.add(week0);
+    expected.add(week1);
+    expected.add(week2);
+    expected.add(week3);
+
+    ArrayList<ArrayList<Cat>> result = cafe.getGroomingSchedule();
+
+    if (expected.size() != result.size()) {
+      System.out.println("Expected : " + expected);
+      System.out.println("Got : " + result);
+      throw new AssertionError(
+          "Test failed for grooming schedule. "
+              + "size of output array does not match size of expected output");
+    }
+    for (int i = 0; i < 4; i += 1) {
+      ArrayList<Cat> expectedCat = expected.get(i);
+      ArrayList<Cat> resultCat = result.get(i);
+
+      for (int j = 0; j < expectedCat.size(); j++) {
+        if (!(expectedCat.get(j).equals(resultCat.get(j)))) {
+          throw new AssertionError(
+              "Test failed for grooming schedule. Expected "
+                  + expectedCat.toString()
+                  + " in week "
+                  + i
+                  + " but got "
+                  + resultCat.toString());
+        }
+      }
+    }
+    System.out.println("Test passed.");
+  }
+}
+
+class getGroomingSchedule4 implements Runnable {
+  @Override
+  public void run() {
+    CatCafe cafe = new CatCafe();
+
+    ArrayList<ArrayList<Cat>> result = cafe.getGroomingSchedule();
+
+    if (result.size() != 0) {
+      throw new AssertionError(
+          "Test failed for grooming schedule. "
+              + "Expected empty array but got "
+              + result.toString());
+    }
+
+    System.out.println("Test passed.");
+  }
+}
+
 public class Tester {
   static String[] tests = {
     "a3.test_hire_1",
@@ -1935,6 +2219,7 @@ public class Tester {
     "a3.shallow_copy1",
     "a3.shallow_copy2",
     "a3.shallow_copy3",
+    "a3.shallow_copy4",
     "a3.hire_rotation1",
     "a3.hire_rotation2",
     "a3.hire_rotation3",
@@ -1951,6 +2236,7 @@ public class Tester {
     "a3.retire_edgeCase7",
     "a3.retire_edgeCase8",
     "a3.retire_edgeCase9",
+    "a3.retire_edgeCase10",
     "a3.hire_retire1",
     "a3.hallOfFame1",
     "a3.hallOfFame2",
@@ -1963,7 +2249,11 @@ public class Tester {
     "a3.budgetGroomingExpenses4",
     "a3.budgetGroomingExpenses5",
     "a3.iterator1",
-    "a3.iterator2"
+    "a3.iterator2",
+    "a3.getGroomingSchedule1",
+    "a3.getGroomingSchedule2",
+    "a3.getGroomingSchedule3",
+    "a3.getGroomingSchedule4",
   };
 
   public static void run() {

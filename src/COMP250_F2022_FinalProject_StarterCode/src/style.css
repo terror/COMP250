@@ -1,0 +1,43 @@
+#commandPanel {
+    -fx-background-color: aqua;
+    -fx-alignment: center;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+.commandButton {
+    -fx-font-family: monospace;
+    -fx-max-height:500;
+    -fx-max-width:1000;
+    -fx-pref-height:500;
+    -fx-pref-width:1000;
+}
+
+#map {
+    -fx-alignment: center;
+    -fx-background-color: #4da5ff
+
+}
+
+#messagePanel {
+    -fx-background-color: aquamarine;
+    -fx-padding: 7;
+}
+
+.logText {
+    -fx-font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    -fx-font-size: 13px;
+}
+
+.regularTile {
+    -fx-fill: #4da5ff;
+    -fx-stroke: black;
+    -fx-stroke-width: 2;
+}
+
+.pathline {
+    -fx-stroke: #FF0000;
+    -fx-stroke-width: 4;
+    -fx-stroke-dash-array: 10;
+    -fx-stroke-dash-offset: 0;
+}

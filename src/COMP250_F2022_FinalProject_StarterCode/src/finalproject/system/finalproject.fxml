@@ -1,0 +1,55 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<VBox fx:id="root" fx:controller="finalproject.system.Controller" xmlns:fx="http://javafx.com/fxml" stylesheets="@../../style.css">
+    <MenuBar id="menubar">
+        <Menu text="Control">
+            <MenuItem text="Start Simulation" onAction="#startSimulation"></MenuItem>
+            <MenuItem text="Reset" onAction="#reset"></MenuItem>
+            <MenuItem text="Reset Waypoints" onAction="#resetWaypoints"></MenuItem>
+            <MenuItem text="Reset Path" onAction="#resetPath"></MenuItem>
+            <SeparatorMenuItem></SeparatorMenuItem>
+            <MenuItem text="Exit" onAction="#exit"></MenuItem>
+        </Menu>
+        <Menu text="Maps">
+            <MenuItem text="Map 1" onAction="#drawMap1"></MenuItem>
+            <MenuItem text="Map 2" onAction="#drawMap2"></MenuItem>
+            <MenuItem text="Map 3" onAction="#drawMap3"></MenuItem>
+            <MenuItem text="Map 4" onAction="#drawMap4"></MenuItem>
+        </Menu>
+        <Menu text="View">
+            <CheckMenuItem fx:id="systemLogToggle" selected="true" text="Display system log"/>
+            <CheckMenuItem fx:id="tileTextToggle" selected="false" text="Display tile text"/>
+        </Menu>
+    </MenuBar>
+    <BorderPane>
+        <center>
+            <StackPane>
+                <Pane fx:id="mapPanel" id="map">
+                </Pane>
+            </StackPane>
+        </center>
+        <bottom>
+            <HBox fx:id="interfacePanel" id="interfacePanel">
+                <HBox fx:id="commandPanel" id="commandPanel">
+                    <Button styleClass="commandButton" wrapText="true" text="Add waypoint" onAction="#onAddWaypointButtonClick"></Button>
+                    <Button styleClass="commandButton" wrapText="true" text="BFS traversal" onAction="#onBFSButtonClick">BFS path</Button>
+                    <Button styleClass="commandButton" wrapText="true" text="DFS traversal" onAction="#onDFSButtonClick">DFS path</Button>
+                    <Button styleClass="commandButton" wrapText="true" text="Shortest path" onAction="#onShortestPathButtonClick">Shortest path</Button>
+                    <Button styleClass="commandButton" wrapText="true" text="Fastest path" onAction="#onFastestPathButtonClick">Fastest path</Button>
+                    <Button styleClass="commandButton" wrapText="true" text="Safety first!" onAction="#onSafestPathButtonClick"></Button>
+                </HBox>
+                <VBox>
+                    <HBox alignment="BOTTOM_RIGHT" style="-fx-padding: 2 10 2 10;">
+                        <Text fill="black" textAlignment="CENTER">Health: </Text>
+                        <TextField  fx:id="healthInput">27</TextField>
+                    </HBox>
+                    <ScrollPane fx:id="messagePanel" id="messagePanel">
+                        <VBox fx:id="textPanel" id="textPanel"></VBox>
+                    </ScrollPane>
+                </VBox>
+
+            </HBox>
+        </bottom>
+    </BorderPane>
+</VBox>
