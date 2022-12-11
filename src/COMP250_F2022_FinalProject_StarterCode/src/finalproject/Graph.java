@@ -1,31 +1,49 @@
 package finalproject;
 
 import finalproject.system.Tile;
-import finalproject.tiles.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Graph {
-  // TODO level 2: Add fields that can help you implement this data type
+  HashMap<Tile, ArrayList<Edge>> edges;
 
-  // TODO level 2: initialize and assign all variables inside the constructor
-  public Graph(ArrayList<Tile> vertices) {}
+  public Graph(ArrayList<Tile> vertices) {
+    // Initialize each array list
+    for (Tile t : vertices)
+      edges.put(t, new ArrayList<>());
 
-  // TODO level 2: add an edge to the graph
-  public void addEdge(Tile origin, Tile destination, double weight) {}
+    // Store all edges
+    for (Tile v : vertices) {
+      for (Tile u : v.neighbors) {
+        addEdge(u, v, v.costEstimate);
+        addEdge(v, u, u.costEstimate);
+      }
+    }
+  }
 
-  // TODO level 2: return a list of all edges in the graph
+  public void addEdge(Tile origin, Tile destination, double weight) {
+    edges.get(origin).add(new Edge(origin, destination, weight));
+  }
+
   public ArrayList<Edge> getAllEdges() {
-    return null;
+    ArrayList<Edge> all = new ArrayList<>();
+    for (ArrayList<Edge> curr : edges.values())
+      for (Edge e : curr) all.add(e);
+    return all;
   }
 
-  // TODO level 2: return list of tiles adjacent to t
   public ArrayList<Tile> getNeighbors(Tile t) {
-    return null;
+    ArrayList<Tile> neighbors = new ArrayList<>();
+    for (Edge e : edges.get(t))
+      if (e.destination.isWalkable())
+        neighbors.add(e.destination);
+    return neighbors;
   }
 
-  // TODO level 2: return total cost for the input path
   public double computePathCost(ArrayList<Tile> path) {
-    return 0.0;
+    double cost = 0;
+    for (Tile t : path) cost += t.costEstimate;
+    return cost;
   }
 
   public static class Edge {
@@ -33,17 +51,18 @@ public class Graph {
     Tile destination;
     double weight;
 
-    // TODO level 2: initialize appropriate fields
-    public Edge(Tile s, Tile d, double cost) {}
-
-    // TODO level 2: getter function 1
-    public Tile getStart() {
-      return null;
+    public Edge(Tile origin, Tile destination, double weight) {
+      this.origin = origin;
+      this.destination = destination;
+      this.weight = weight;
     }
 
-    // TODO level 2: getter function 2
+    public Tile getStart() {
+      return origin;
+    }
+
     public Tile getEnd() {
-      return null;
+      return destination;
     }
   }
 }

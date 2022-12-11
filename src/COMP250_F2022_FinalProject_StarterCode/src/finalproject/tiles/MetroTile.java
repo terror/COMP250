@@ -10,6 +10,7 @@ public class MetroTile extends Tile {
 
   // TODO level 0: finish constructor
   public MetroTile() {
+    super(1, 1, 2);
     this.type = TileType.Metro;
   }
 
