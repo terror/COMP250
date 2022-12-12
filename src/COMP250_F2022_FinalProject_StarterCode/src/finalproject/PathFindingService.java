@@ -15,20 +15,73 @@ public abstract class PathFindingService {
 
   public abstract void generateGraph();
 
-  // TODO level 4: Implement basic dijkstra's algorithm to find a path to the final unknown
-  // destination
   public ArrayList<Tile> findPath(Tile startNode) {
-    return null;
+    TilePriorityQ queue = new TilePriorityQ();
+
+    for (Tile t : g.getAllVertices()) {
+      if (t == startNode) t.costEstimate = 0;
+      else t.costEstimate = Double.MAX_VALUE;
+      t.predecessor = null;
+      queue.insert(t);
+    }
+
+    Tile endNode = null;
+
+    while (!queue.isEmpty()) {
+      Tile u = queue.removeMin();
+
+      for (Tile v : g.getNeighbors(u)) {
+        if (v.isDestination) endNode = v;
+
+        if (u.costEstimate + g.getWeight(u, v) < v.costEstimate)
+          queue.updateKeys(v, u, u.costEstimate + g.getWeight(u, v));
+      }
+    }
+
+    ArrayList<Tile> path = new ArrayList<>();
+
+    if (endNode.predecessor != null || endNode == startNode) {
+      while (endNode != null) {
+        path.add(0, endNode);
+        endNode = endNode.predecessor;
+      }
+    }
+
+    return path;
   }
 
-  // TODO level 5: Implement basic dijkstra's algorithm to path find to a known destination
   public ArrayList<Tile> findPath(Tile start, Tile end) {
-    return null;
+    TilePriorityQ queue = new TilePriorityQ();
+
+    for (Tile t : g.getAllVertices()) {
+      if (t == start) t.costEstimate = 0;
+      else t.costEstimate = Double.MAX_VALUE;
+      t.predecessor = null;
+      queue.insert(t);
+    }
+
+    while (!queue.isEmpty()) {
+      Tile u = queue.removeMin();
+
+      for (Tile v : g.getNeighbors(u))
+        if (u.costEstimate + g.getWeight(u, v) < v.costEstimate)
+          queue.updateKeys(v, u, u.costEstimate + g.getWeight(u, v));
+    }
+
+    ArrayList<Tile> path = new ArrayList<>();
+
+    if (end.predecessor != null || end == start) {
+      while (end != null) {
+        path.add(0, end);
+        end = end.predecessor;
+      }
+    }
+
+    return path;
   }
 
-  // TODO level 5: Implement basic dijkstra's algorithm to path find to the final destination
-  // passing through given waypoints
   public ArrayList<Tile> findPath(Tile start, LinkedList<Tile> waypoints) {
     return null;
   }
 }
+
