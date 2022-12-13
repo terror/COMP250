@@ -4,46 +4,48 @@ import finalproject.system.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Graph {
-  HashMap<Tile, ArrayList<Edge>> edges;
+  HashMap<Tile, HashSet<Edge>> edges;
 
   public Graph(ArrayList<Tile> vertices) {
-    initialize(vertices, "");
+    edges = new HashMap<>();
+    for (Tile v : vertices) edges.put(v, new HashSet<>());
   }
 
   public Graph(ArrayList<Tile> vertices, String type) {
-    initialize(vertices, type);
-  }
-
-  private void initialize(ArrayList<Tile> vertices, String type) {
     edges = new HashMap<>();
 
     for (Tile v : vertices) {
-      for (Tile u : v.neighbors) {
-        if (!edges.containsKey(u)) edges.put(u, new ArrayList<>());
-        if (!edges.containsKey(v)) edges.put(v, new ArrayList<>());
-        addEdge(u, v, getCost(v, type));
-        addEdge(v, u, getCost(u, type));
-      }
+      for (Tile u : v.neighbors)
+        if (u.isWalkable()) addEdge(v, u, getCost(u, type));
     }
   }
 
   private double getCost(Tile t, String type) {
-    if (type.equals("distance")) return t.distanceCost;
-    if (type.equals("time")) return t.timeCost;
-    if (type.equals("damage")) return t.damageCost;
-    throw new IllegalArgumentException();
+    switch (type) {
+      case "damage":
+        return t.damageCost;
+      case "distance":
+        return t.distanceCost;
+      case "time":
+        return t.timeCost;
+      default:
+        throw new IllegalArgumentException();
+    }
   }
 
   public void addEdge(Tile origin, Tile destination, double weight) {
+    if (!edges.containsKey(origin)) edges.put(origin, new HashSet<>());
     edges.get(origin).add(new Edge(origin, destination, weight));
   }
 
   public ArrayList<Edge> getAllEdges() {
     ArrayList<Edge> all = new ArrayList<>();
-    for (ArrayList<Edge> curr : edges.values())
-      for (Edge e : curr) all.add(e);
+    for (HashSet<Edge> curr : edges.values())
+      for (Edge e : curr)
+        all.add(e);
     return all;
   }
 
@@ -68,13 +70,8 @@ public class Graph {
 
   public double computePathCost(ArrayList<Tile> path) {
     double cost = 0;
-
-    for (int i = 0; i < path.size() - 1; ++i) {
-      ArrayList<Edge> curr = edges.get(path.get(i));
-      for (Edge e : curr)
-        if (e.destination == path.get(i + 1)) cost += e.weight;
-    }
-
+    for (int i = 0; i < path.size() - 1; ++i)
+      cost += getWeight(path.get(i), path.get(i + 1));
     return cost;
   }
 

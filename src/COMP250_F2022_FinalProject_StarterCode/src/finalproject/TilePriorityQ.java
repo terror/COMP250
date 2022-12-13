@@ -12,8 +12,8 @@ public class TilePriorityQ {
   }
 
   public TilePriorityQ(ArrayList<Tile> vertices) {
-    items = vertices;
-    build();
+    items = new ArrayList<>();
+    for (Tile t : vertices) insert(t);
   }
 
   public void insert(Tile t) {
@@ -44,13 +44,10 @@ public class TilePriorityQ {
   }
 
   public void updateKeys(Tile t, Tile newPred, double newEstimate) {
-    for (int i = 0; i < items.size(); ++i) {
-      if (items.get(i) == t) {
-        items.get(i).predecessor = newPred;
-        items.get(i).costEstimate = newEstimate;
-        build();
-      }
-    }
+    if (!items.contains(t)) return;
+    t.predecessor = newPred;
+    t.costEstimate = newEstimate;
+    build();
   }
 
   public boolean isEmpty() {
