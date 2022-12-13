@@ -433,11 +433,11 @@ public class Controller {
     PathFindingService pf = new ShortestPath(StateManager.getInstance().getCurrentMap());
 
     // USE THIS TO TEST LEVEL 4
-    path = pf.findPath(StateManager.getInstance().getCurrentMap());
+    // path = pf.findPath(StateManager.getInstance().getCurrentMap());
 
     // USE THIS TO TEST LEVEL 5
-    // LinkedList<Tile> waypoints = StateManager.getInstance().currentWaypoints;
-    // path = pf.findPath(StateManager.getInstance().getCurrentMap(), waypoints);
+    LinkedList<Tile> waypoints = StateManager.getInstance().currentWaypoints;
+    path = pf.findPath(StateManager.getInstance().getCurrentMap(), waypoints);
 
     // visualize the path if available
     visualizePath(path);

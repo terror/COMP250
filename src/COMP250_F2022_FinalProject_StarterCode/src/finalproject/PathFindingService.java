@@ -81,7 +81,24 @@ public abstract class PathFindingService {
   }
 
   public ArrayList<Tile> findPath(Tile start, LinkedList<Tile> waypoints) {
-    return null;
+    ArrayList<Tile> all = new ArrayList<>();
+
+    all.add(start);
+
+    for (Tile w : waypoints) all.add(w);
+
+    for (Tile t : g.getAllVertices())
+      if (t.isDestination)
+        all.add(t);
+
+    ArrayList<Tile> path = new ArrayList<>();
+
+    for (int i = 0; i < all.size() - 1; ++i) {
+      for (Tile t : findPath(all.get(i), all.get(i + 1)))
+        path.add(t);
+    }
+
+    return path;
   }
 }
 
