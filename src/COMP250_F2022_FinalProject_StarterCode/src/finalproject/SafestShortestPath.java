@@ -1,7 +1,6 @@
 package finalproject;
 
 import finalproject.system.Tile;
-import finalproject.Graph.Edge;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -43,7 +42,7 @@ public class SafestShortestPath extends ShortestPath {
     while (true) {
       double lambda = (costGraph.computePathCost(costGraphPath) - costGraph.computePathCost(damageGraphPath)) / (damageGraph.computePathCost(damageGraphPath) - damageGraph.computePathCost(costGraphPath));
 
-      for (Edge e : aggregatedGraph.getAllEdges())
+      for (Graph.Edge e : aggregatedGraph.getAllEdges())
         e.weight = e.destination.distanceCost + lambda * e.destination.damageCost;
 
       ArrayList<Tile> aggregatedGraphPath = super.findPath(source, waypoints);
