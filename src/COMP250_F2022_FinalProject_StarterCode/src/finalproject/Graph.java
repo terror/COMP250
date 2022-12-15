@@ -1,6 +1,7 @@
 package finalproject;
 
 import finalproject.system.Tile;
+import finalproject.tiles.MetroTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,19 +19,22 @@ public class Graph {
     edges = new HashMap<>();
 
     for (Tile v : vertices) {
-      for (Tile u : v.neighbors)
-        if (u.isWalkable()) addEdge(v, u, getCost(u, type));
+      for (Tile u : v.neighbors) {
+        boolean metro = v instanceof MetroTile && u instanceof MetroTile;
+        if (metro) ((MetroTile) u).fixMetro(v);
+        if (u.isWalkable()) addEdge(v, u, getCost(u, type, metro));
+      }
     }
   }
 
-  private double getCost(Tile t, String type) {
+  private double getCost(Tile t, String type, boolean metro) {
     switch (type) {
       case "damage":
         return t.damageCost;
       case "distance":
-        return t.distanceCost;
+        return metro ? ((MetroTile) t).metroDistanceCost : t.distanceCost;
       case "time":
-        return t.timeCost;
+        return metro ? ((MetroTile) t).metroTimeCost : t.timeCost;
       default:
         throw new IllegalArgumentException();
     }

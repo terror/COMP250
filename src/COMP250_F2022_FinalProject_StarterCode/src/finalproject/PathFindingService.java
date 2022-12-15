@@ -19,8 +19,7 @@ public abstract class PathFindingService {
     TilePriorityQ queue = new TilePriorityQ();
 
     for (Tile t : g.getAllVertices()) {
-      if (t == startNode) t.costEstimate = 0;
-      else t.costEstimate = Double.MAX_VALUE;
+      t.costEstimate = t == startNode ? 0 : Double.MAX_VALUE;
       t.predecessor = null;
       queue.insert(t);
     }
@@ -54,8 +53,7 @@ public abstract class PathFindingService {
     TilePriorityQ queue = new TilePriorityQ();
 
     for (Tile t : g.getAllVertices()) {
-      if (t == start) t.costEstimate = 0;
-      else t.costEstimate = Double.MAX_VALUE;
+      t.costEstimate = t == start ? 0 : Double.MAX_VALUE;
       t.predecessor = null;
       queue.insert(t);
     }
@@ -88,14 +86,14 @@ public abstract class PathFindingService {
     for (Tile w : waypoints) all.add(w);
 
     for (Tile t : g.getAllVertices())
-      if (t.isDestination)
-        all.add(t);
+      if (t.isDestination) all.add(t);
 
     ArrayList<Tile> path = new ArrayList<>();
 
     for (int i = 0; i < all.size() - 1; ++i) {
-      for (Tile t : findPath(all.get(i), all.get(i + 1)))
-        path.add(t);
+      ArrayList<Tile> curr = findPath(all.get(i), all.get(i + 1));
+      for (int j = i > 0 ? 1 : 0; j < curr.size(); ++j)
+        path.add(curr.get(j));
     }
 
     return path;

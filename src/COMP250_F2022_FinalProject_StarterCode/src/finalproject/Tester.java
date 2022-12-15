@@ -44,7 +44,7 @@ public class Tester {
 
     System.out.printf("%n%n%d of %d tests passed.%n", passed, total);
 
-    System.out.println("Tests failed:");
+    System.out.println("\nTests failed:");
 
     for (String t : failed)
       System.out.println(t);
@@ -254,6 +254,7 @@ public class Tester {
     tile2id = new HashMap<Tile, Integer>();
     for (int i = 0; i < 5; ++i) {
       TestTile t = new TestTile();
+      t.nodeID = i;
       tile2id.put(t, i);
       tiles.add(t);
     }
@@ -394,6 +395,7 @@ public class Tester {
     tileArray = new Tile[map.length][map[0].length];
     ArrayList<MetroTile> metros = new ArrayList<MetroTile>();
 
+    int id = 0;
     for (int i = 0; i < map.length; ++i)
       for (int j = 0; j < map[0].length; ++j) {
         Tile t = null;
@@ -437,6 +439,7 @@ public class Tester {
             t = new MountainTile();
         }
 
+        t.nodeID = id++;
         tileArray[i][j] = t;
         world.add(t);
       }
@@ -519,25 +522,44 @@ public class Tester {
     buildWorld(lgMap, false);
     ShortestPath shortest = new ShortestPath(world.get(0));
     ArrayList<Tile> path = shortest.findPath(world.get(0));
-    /*
-     * s
-     * f
-     * f f d p
-     */
-    if (path.size() != 6) {
-      System.out.println("Path length (number of vertices, including start and end) should be 6.");
-      return false;
-    }
+    if (path.size() == 6) { // to furthest (weighted) vertex
+      /*
+       * s
+       * f
+       * f f d p
+       */
+      Tile[] a = {tileArray[0][0], tileArray[1][0], tileArray[2][0], tileArray[2][1], tileArray[2][2], tileArray[2][3]};
+      for (int i = 0; i < a.length; ++i)
+        if (path.get(i) != a[i]) {
+          System.out.println("Wrong path.");
+          return false;
+        }
 
-    Tile[] a = {tileArray[0][0], tileArray[1][0], tileArray[2][0], tileArray[2][1], tileArray[2][2], tileArray[2][3]};
-    for (int i = 0; i < a.length; ++i)
-      if (path.get(i) != a[i]) {
-        System.out.println("Wrong path.");
+      if (shortest.g.computePathCost(path) != 8) {
+        System.out.println("Path cost should be 8.");
         return false;
       }
 
-    if (shortest.g.computePathCost(path) != 8) {
-      System.out.println("Path cost should be 8.");
+    } else if (path.size() == 7) { // to destination
+      /* s
+       * f
+       * f f
+       *   f M e
+       */
+      Tile[] a = {tileArray[0][0], tileArray[1][0], tileArray[2][0], tileArray[2][1], tileArray[3][1], tileArray[3][2], tileArray[3][3]};
+      for (int i = 0; i < a.length; ++i)
+        if (path.get(i) != a[i]) {
+          System.out.println("Wrong path.");
+          return false;
+        }
+
+      if (shortest.g.computePathCost(path) != 6) {
+        System.out.println("Path cost should be 6.");
+        return false;
+      }
+
+    } else {
+      System.out.println("Wrong path length");
       return false;
     }
     return true;
@@ -579,6 +601,7 @@ public class Tester {
      *     M e
      */
     if (path.size() != 7) {
+      System.out.println(path.size());
       System.out.println("Path length (number of vertices, including start and end) should be 7.");
       return false;
     }
@@ -633,7 +656,7 @@ public class Tester {
     ShortestPath shortest = new ShortestPath(world.get(0));
     ArrayList<Graph.Edge> edges = shortest.g.getAllEdges();
     if (edges.size() != 42) {
-      System.out.println("There should be 40 edges. Note that MountainTile is not reachable.");
+      System.out.println("There should be 42 edges. Note that MountainTile is not reachable.");
       return false;
     }
     for (Graph.Edge e : edges) {
@@ -659,7 +682,7 @@ public class Tester {
     FastestPath shortest = new FastestPath(world.get(0));
     ArrayList<Graph.Edge> edges = shortest.g.getAllEdges();
     if (edges.size() != 42) {
-      System.out.println("There should be 40 edges. Note that MountainTile is not reachable.");
+      System.out.println("There should be 42 edges. Note that MountainTile is not reachable.");
       return false;
     }
     for (Graph.Edge e : edges) {
