@@ -43,7 +43,7 @@ public class SafestShortestPath extends ShortestPath {
       double lambda = (costGraph.computePathCost(costGraphPath) - costGraph.computePathCost(damageGraphPath)) / (damageGraph.computePathCost(damageGraphPath) - damageGraph.computePathCost(costGraphPath));
 
       for (Graph.Edge e : aggregatedGraph.getAllEdges())
-        e.weight = e.destination.distanceCost + lambda * e.destination.damageCost;
+        e.weight = aggregatedGraph.getCost(e, "distance") + lambda * aggregatedGraph.getCost(e, "damage");
 
       ArrayList<Tile> aggregatedGraphPath = super.findPath(source, waypoints);
 

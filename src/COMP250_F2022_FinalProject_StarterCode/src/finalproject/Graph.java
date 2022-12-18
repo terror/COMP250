@@ -27,6 +27,21 @@ public class Graph {
     }
   }
 
+  public double getCost(Edge e, String type) {
+    boolean metro = e.origin instanceof MetroTile && e.destination instanceof MetroTile;
+
+    switch (type) {
+      case "damage":
+        return e.destination.damageCost;
+      case "distance":
+        return metro ? ((MetroTile) e.destination).metroDistanceCost : e.destination.distanceCost;
+      case "time":
+        return metro ? ((MetroTile) e.destination).metroTimeCost : e.destination.timeCost;
+      default:
+        throw new IllegalArgumentException();
+    }
+  }
+
   private double getCost(Tile t, String type, boolean metro) {
     switch (type) {
       case "damage":
