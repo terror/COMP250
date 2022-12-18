@@ -601,7 +601,6 @@ public class Tester {
      *     M e
      */
     if (path.size() != 7) {
-      System.out.println(path.size());
       System.out.println("Path length (number of vertices, including start and end) should be 7.");
       return false;
     }
@@ -747,7 +746,7 @@ public class Tester {
   // test SafestShortestPath.findPath(Tile start, LinkedList<Tile> waypoints)
   public static boolean testSafeFindPath1() { // 1 point
     buildWorld(dgMap, false);
-    ShortestPath shortest = new SafestShortestPath(world.get(0), 100);
+    SafestShortestPath shortest = new SafestShortestPath(world.get(0), 100);
     LinkedList<Tile> waypoints = new LinkedList<Tile>();
     ArrayList<Tile> path = shortest.findPath(world.get(0), waypoints);
     /*
@@ -768,7 +767,7 @@ public class Tester {
         return false;
       }
 
-    if (shortest.g.computePathCost(path) != 6) {
+    if (shortest.costGraph.computePathCost(path) != 6) {
       System.out.println("Path cost should be 6.");
       return false;
     }
@@ -778,7 +777,7 @@ public class Tester {
   // test SafestShortestPath.findPath(Tile start, LinkedList<Tile> waypoints)
   public static boolean testSafeFindPath2() { // 1 point
     buildWorld(dgMap, false);
-    ShortestPath shortest = new SafestShortestPath(world.get(0), 1);
+    SafestShortestPath shortest = new SafestShortestPath(world.get(0), 1);
     LinkedList<Tile> waypoints = new LinkedList<Tile>();
     ArrayList<Tile> path = shortest.findPath(world.get(0), waypoints);
     /*
@@ -791,7 +790,7 @@ public class Tester {
       System.out.println("Path length (number of vertices, including start and end) should be 7.");
       return false;
     }
-    if (shortest.g.computePathCost(path) != 16) {
+    if (shortest.costGraph.computePathCost(path) != 16) {
       System.out.println("Path cost should be 16.");
       return false;
     }
@@ -801,7 +800,7 @@ public class Tester {
   // test SafestShortestPath.findPath(Tile start, LinkedList<Tile> waypoints)
   public static boolean testSafeFindPath3() { // 1 point
     buildWorld(dgMap, false);
-    ShortestPath shortest = new SafestShortestPath(world.get(0), 100);
+    SafestShortestPath shortest = new SafestShortestPath(world.get(0), 100);
     LinkedList<Tile> waypoints = new LinkedList<Tile>();
     waypoints.add(tileArray[3][2]);
     ArrayList<Tile> path = shortest.findPath(world.get(0), waypoints);
@@ -815,7 +814,7 @@ public class Tester {
       System.out.println("Path length (number of vertices, including start and end) should be 7.");
       return false;
     }
-    if (shortest.g.computePathCost(path) != 8) {
+    if (shortest.costGraph.computePathCost(path) != 8) {
       System.out.println("Path cost should be 8.");
       return false;
     }
@@ -825,7 +824,7 @@ public class Tester {
   // test SafestShortestPath.findPath(Tile start, LinkedList<Tile> waypoints)
   public static boolean testSafeFindPath4() { // 1 point
     buildWorld(dgMap, false);
-    ShortestPath shortest = new SafestShortestPath(world.get(0), 100);
+    SafestShortestPath shortest = new SafestShortestPath(world.get(0), 100);
     LinkedList<Tile> waypoints = new LinkedList<Tile>();
     waypoints.add(tileArray[3][0]);
     waypoints.add(tileArray[3][2]);
@@ -848,7 +847,7 @@ public class Tester {
         return false;
       }
 
-    if (shortest.g.computePathCost(path) != 14) {
+    if (shortest.costGraph.computePathCost(path) != 14) {
       System.out.println("Path cost should be 14.");
       return false;
     }

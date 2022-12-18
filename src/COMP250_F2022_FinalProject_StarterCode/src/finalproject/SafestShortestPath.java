@@ -49,7 +49,7 @@ public class SafestShortestPath extends ShortestPath {
 
       if (aggregatedGraph.computePathCost(aggregatedGraphPath) == aggregatedGraph.computePathCost(costGraphPath))
         return damageGraphPath;
-      else if (aggregatedGraph.computePathCost(aggregatedGraphPath) <= health) damageGraphPath = aggregatedGraphPath;
+      else if (damageGraph.computePathCost(aggregatedGraphPath) <= health) damageGraphPath = aggregatedGraphPath;
       else costGraphPath = aggregatedGraphPath;
     }
   }
