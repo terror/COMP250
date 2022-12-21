@@ -1,7 +1,6 @@
 package finalproject;
 
 import finalproject.system.Tile;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;

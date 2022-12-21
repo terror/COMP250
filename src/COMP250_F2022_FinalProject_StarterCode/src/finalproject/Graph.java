@@ -2,7 +2,6 @@ package finalproject;
 
 import finalproject.system.Tile;
 import finalproject.tiles.MetroTile;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,9 +61,7 @@ public class Graph {
 
   public ArrayList<Edge> getAllEdges() {
     ArrayList<Edge> all = new ArrayList<>();
-    for (HashSet<Edge> curr : edges.values())
-      for (Edge e : curr)
-        all.add(e);
+    for (HashSet<Edge> curr : edges.values()) for (Edge e : curr) all.add(e);
     return all;
   }
 
@@ -75,22 +72,19 @@ public class Graph {
   }
 
   public double getWeight(Tile u, Tile v) {
-    for (Edge x : edges.get(u))
-      if (x.destination == v) return x.weight;
+    for (Edge x : edges.get(u)) if (x.destination == v) return x.weight;
     return 0;
   }
 
   public ArrayList<Tile> getNeighbors(Tile t) {
     ArrayList<Tile> neighbors = new ArrayList<>();
-    for (Edge e : edges.get(t))
-      if (e.destination.isWalkable()) neighbors.add(e.destination);
+    for (Edge e : edges.get(t)) if (e.destination.isWalkable()) neighbors.add(e.destination);
     return neighbors;
   }
 
   public double computePathCost(ArrayList<Tile> path) {
     double cost = 0;
-    for (int i = 0; i < path.size() - 1; ++i)
-      cost += getWeight(path.get(i), path.get(i + 1));
+    for (int i = 0; i < path.size() - 1; ++i) cost += getWeight(path.get(i), path.get(i + 1));
     return cost;
   }
 

@@ -2,14 +2,12 @@ package finalproject;
 
 import finalproject.system.Tile;
 import finalproject.system.TileType;
-
-import finalproject.tiles.PlainTile;
 import finalproject.tiles.DesertTile;
-import finalproject.tiles.MountainTile;
 import finalproject.tiles.FacilityTile;
 import finalproject.tiles.MetroTile;
+import finalproject.tiles.MountainTile;
+import finalproject.tiles.PlainTile;
 import finalproject.tiles.ZombieInfectedRuinTile;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -23,7 +21,8 @@ public class Tester {
     ArrayList<String> filtered = new ArrayList<>(Arrays.asList("main", "buildGraph", "buildWorld"));
 
     for (Method method : Tester.class.getMethods()) {
-      if (!Modifier.isStatic(method.getModifiers()) || filtered.contains(method.getName())) continue;
+      if (!Modifier.isStatic(method.getModifiers()) || filtered.contains(method.getName()))
+        continue;
 
       System.out.printf("%n======= %s =======%n", method.getName());
       System.out.flush();
@@ -46,8 +45,7 @@ public class Tester {
 
     System.out.println("\nTests failed:");
 
-    for (String t : failed)
-      System.out.println(t);
+    for (String t : failed) System.out.println(t);
   }
 
   public static class TestTile extends Tile {
@@ -109,8 +107,7 @@ public class Tester {
       tiles[i] = new TestTile();
       tiles[i].nodeID = i;
     }
-    for (int i = 0; i < tiles.length - 1; ++i)
-      tiles[i].addNeighbor(tiles[i + 1]);
+    for (int i = 0; i < tiles.length - 1; ++i) tiles[i].addNeighbor(tiles[i + 1]);
     ArrayList<Tile> arr = GraphTraversal.BFS(tiles[0]);
 
     System.out.println("Expected:");
@@ -140,8 +137,7 @@ public class Tester {
       tiles[i] = new TestTile();
       tiles[i].nodeID = i;
     }
-    for (int i = 0; i < tiles.length - 1; ++i)
-      tiles[i].addNeighbor(tiles[i + 1]);
+    for (int i = 0; i < tiles.length - 1; ++i) tiles[i].addNeighbor(tiles[i + 1]);
     ArrayList<Tile> arr = GraphTraversal.DFS(tiles[0]);
 
     System.out.println("Expected:");
@@ -164,7 +160,6 @@ public class Tester {
     return true;
   }
 
-
   /*
    *       4
    *       |
@@ -178,8 +173,7 @@ public class Tester {
       tiles[i] = new TestTile();
       tiles[i].nodeID = i;
     }
-    for (int i = 1; i < tiles.length; ++i)
-      tiles[0].addNeighbor(tiles[i]);
+    for (int i = 1; i < tiles.length; ++i) tiles[0].addNeighbor(tiles[i]);
     ArrayList<Tile> arr = GraphTraversal.BFS(tiles[0]);
 
     System.out.println("Expected:");
@@ -213,8 +207,7 @@ public class Tester {
       tiles[i] = new TestTile();
       tiles[i].nodeID = i;
     }
-    for (int i = 1; i < tiles.length; ++i)
-      tiles[0].addNeighbor(tiles[i]);
+    for (int i = 1; i < tiles.length; ++i) tiles[0].addNeighbor(tiles[i]);
     ArrayList<Tile> arr = GraphTraversal.DFS(tiles[0]);
 
     System.out.println("Expected:");
@@ -271,9 +264,7 @@ public class Tester {
 
   public static boolean testEdges() { // 2 points
     int[][] edges = new int[5][5];
-    for (int i = 0; i < 5; ++i)
-      for (int j = 0; j < 5; ++j)
-        edges[i][j] = 0;
+    for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; ++j) edges[i][j] = 0;
     edges[0][1] = 3;
     edges[0][3] = 2;
     edges[1][2] = 1;
@@ -334,8 +325,7 @@ public class Tester {
   public static boolean testPathCost() { // 2 points
     buildGraph();
     ArrayList<Tile> path = new ArrayList<Tile>();
-    for (int i = 0; i < 5; ++i)
-      path.add(tiles.get(i));
+    for (int i = 0; i < 5; ++i) path.add(tiles.get(i));
     double cost = graph.computePathCost(path);
     if (cost != 10) {
       System.out.println("Cost of path 0-1-2-3-4 should be 10.");
@@ -384,9 +374,15 @@ public class Tester {
     return true;
   }
 
-  public static char[][] smMap = {{'s', 'd'}, {'z', 'e'},};
-  public static char[][] lgMap = {{'s', 'M', 'p', 'z'}, {'f', 'm', 'p', 'd'}, {'f', 'f', 'd', 'p'}, {'d', 'f', 'M', 'e'},};
-  public static char[][] dgMap = {{'s', 'z', 'z', 'p'}, {'p', 'm', 'z', 'p'}, {'p', 'p', 'z', 'z'}, {'z', 'p', 'p', 'e'},};
+  public static char[][] smMap = {
+    {'s', 'd'}, {'z', 'e'},
+  };
+  public static char[][] lgMap = {
+    {'s', 'M', 'p', 'z'}, {'f', 'm', 'p', 'd'}, {'f', 'f', 'd', 'p'}, {'d', 'f', 'M', 'e'},
+  };
+  public static char[][] dgMap = {
+    {'s', 'z', 'z', 'p'}, {'p', 'm', 'z', 'p'}, {'p', 'p', 'z', 'z'}, {'z', 'p', 'p', 'e'},
+  };
   public static ArrayList<Tile> world = null;
   public static Tile[][] tileArray = null;
 
@@ -449,8 +445,7 @@ public class Tester {
         tileArray[i][j].addNeighbor(tileArray[i + 0][j + 1]);
 
     for (int i = 0; i < map.length - 1; ++i)
-      for (int j = 0; j < map[0].length; ++j)
-        tileArray[i][j].addNeighbor(tileArray[i + 1][j + 0]);
+      for (int j = 0; j < map[0].length; ++j) tileArray[i][j].addNeighbor(tileArray[i + 1][j + 0]);
 
     if (useMetro) {
       for (int i = 0; i < metros.size() - 1; ++i)
@@ -528,7 +523,14 @@ public class Tester {
        * f
        * f f d p
        */
-      Tile[] a = {tileArray[0][0], tileArray[1][0], tileArray[2][0], tileArray[2][1], tileArray[2][2], tileArray[2][3]};
+      Tile[] a = {
+        tileArray[0][0],
+        tileArray[1][0],
+        tileArray[2][0],
+        tileArray[2][1],
+        tileArray[2][2],
+        tileArray[2][3]
+      };
       for (int i = 0; i < a.length; ++i)
         if (path.get(i) != a[i]) {
           System.out.println("Wrong path.");
@@ -546,7 +548,15 @@ public class Tester {
        * f f
        *   f M e
        */
-      Tile[] a = {tileArray[0][0], tileArray[1][0], tileArray[2][0], tileArray[2][1], tileArray[3][1], tileArray[3][2], tileArray[3][3]};
+      Tile[] a = {
+        tileArray[0][0],
+        tileArray[1][0],
+        tileArray[2][0],
+        tileArray[2][1],
+        tileArray[3][1],
+        tileArray[3][2],
+        tileArray[3][3]
+      };
       for (int i = 0; i < a.length; ++i)
         if (path.get(i) != a[i]) {
           System.out.println("Wrong path.");
@@ -659,7 +669,8 @@ public class Tester {
       return false;
     }
     for (Graph.Edge e : edges) {
-      if (e.origin.getTileType() == TileType.Metro && e.destination.getTileType() == TileType.Metro) {
+      if (e.origin.getTileType() == TileType.Metro
+          && e.destination.getTileType() == TileType.Metro) {
         if (e.weight != ((MetroTile) e.destination).metroDistanceCost) {
           System.out.println("Weight should be the metro distance cost.");
           return false;
@@ -685,7 +696,8 @@ public class Tester {
       return false;
     }
     for (Graph.Edge e : edges) {
-      if (e.origin.getTileType() == TileType.Metro && e.destination.getTileType() == TileType.Metro) {
+      if (e.origin.getTileType() == TileType.Metro
+          && e.destination.getTileType() == TileType.Metro) {
         if (e.weight != ((MetroTile) e.destination).metroTimeCost) {
           System.out.println("Weight should be the metro time cost.");
           return false;
@@ -760,7 +772,15 @@ public class Tester {
       return false;
     }
 
-    Tile[] a = {tileArray[0][0], tileArray[0][1], tileArray[0][2], tileArray[1][2], tileArray[2][2], tileArray[2][3], tileArray[3][3]};
+    Tile[] a = {
+      tileArray[0][0],
+      tileArray[0][1],
+      tileArray[0][2],
+      tileArray[1][2],
+      tileArray[2][2],
+      tileArray[2][3],
+      tileArray[3][3]
+    };
     for (int i = 0; i < a.length; ++i)
       if (path.get(i) != a[i]) {
         System.out.println("Wrong path.");
@@ -840,7 +860,15 @@ public class Tester {
       return false;
     }
 
-    Tile[] a = {tileArray[0][0], tileArray[1][0], tileArray[2][0], tileArray[3][0], tileArray[3][1], tileArray[3][2], tileArray[3][3]};
+    Tile[] a = {
+      tileArray[0][0],
+      tileArray[1][0],
+      tileArray[2][0],
+      tileArray[3][0],
+      tileArray[3][1],
+      tileArray[3][2],
+      tileArray[3][3]
+    };
     for (int i = 0; i < a.length; ++i)
       if (path.get(i) != a[i]) {
         System.out.println("Wrong path.");

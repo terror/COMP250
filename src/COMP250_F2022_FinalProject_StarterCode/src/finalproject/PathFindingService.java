@@ -1,7 +1,6 @@
 package finalproject;
 
 import finalproject.system.Tile;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -85,18 +84,15 @@ public abstract class PathFindingService {
 
     for (Tile w : waypoints) all.add(w);
 
-    for (Tile t : g.getAllVertices())
-      if (t.isDestination) all.add(t);
+    for (Tile t : g.getAllVertices()) if (t.isDestination) all.add(t);
 
     ArrayList<Tile> path = new ArrayList<>();
 
     for (int i = 0; i < all.size() - 1; ++i) {
       ArrayList<Tile> curr = findPath(all.get(i), all.get(i + 1));
-      for (int j = i > 0 ? 1 : 0; j < curr.size(); ++j)
-        path.add(curr.get(j));
+      for (int j = i > 0 ? 1 : 0; j < curr.size(); ++j) path.add(curr.get(j));
     }
 
     return path;
   }
 }
-

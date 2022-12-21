@@ -1,7 +1,6 @@
 package finalproject;
 
 import finalproject.system.Tile;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -40,16 +39,21 @@ public class SafestShortestPath extends ShortestPath {
     g = aggregatedGraph;
 
     while (true) {
-      double lambda = (costGraph.computePathCost(costGraphPath) - costGraph.computePathCost(damageGraphPath)) / (damageGraph.computePathCost(damageGraphPath) - damageGraph.computePathCost(costGraphPath));
+      double lambda =
+          (costGraph.computePathCost(costGraphPath) - costGraph.computePathCost(damageGraphPath))
+              / (damageGraph.computePathCost(damageGraphPath)
+                  - damageGraph.computePathCost(costGraphPath));
 
       for (Graph.Edge e : aggregatedGraph.getAllEdges())
-        e.weight = aggregatedGraph.getCost(e, "distance") + lambda * aggregatedGraph.getCost(e, "damage");
+        e.weight =
+            aggregatedGraph.getCost(e, "distance") + lambda * aggregatedGraph.getCost(e, "damage");
 
       ArrayList<Tile> aggregatedGraphPath = super.findPath(source, waypoints);
 
-      if (aggregatedGraph.computePathCost(aggregatedGraphPath) == aggregatedGraph.computePathCost(costGraphPath))
-        return damageGraphPath;
-      else if (damageGraph.computePathCost(aggregatedGraphPath) <= health) damageGraphPath = aggregatedGraphPath;
+      if (aggregatedGraph.computePathCost(aggregatedGraphPath)
+          == aggregatedGraph.computePathCost(costGraphPath)) return damageGraphPath;
+      else if (damageGraph.computePathCost(aggregatedGraphPath) <= health)
+        damageGraphPath = aggregatedGraphPath;
       else costGraphPath = aggregatedGraphPath;
     }
   }

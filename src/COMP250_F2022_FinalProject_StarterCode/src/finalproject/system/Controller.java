@@ -2,13 +2,11 @@ package finalproject.system;
 
 import finalproject.*;
 import finalproject.tiles.*;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
-
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -26,27 +24,18 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class Controller {
-  @FXML
-  VBox root;
+  @FXML VBox root;
 
-  @FXML
-  VBox textPanel;
-  @FXML
-  Pane mapPanel;
-  @FXML
-  HBox commandPanel;
-  @FXML
-  ScrollPane messagePanel;
-  @FXML
-  HBox interfacePanel;
+  @FXML VBox textPanel;
+  @FXML Pane mapPanel;
+  @FXML HBox commandPanel;
+  @FXML ScrollPane messagePanel;
+  @FXML HBox interfacePanel;
 
-  @FXML
-  CheckMenuItem systemLogToggle;
-  @FXML
-  CheckMenuItem tileTextToggle;
+  @FXML CheckMenuItem systemLogToggle;
+  @FXML CheckMenuItem tileTextToggle;
 
-  @FXML
-  TextField healthInput;
+  @FXML TextField healthInput;
 
   int tileSize = 100;
   int stroke = 0;
@@ -70,43 +59,77 @@ public class Controller {
     System.out.println("init");
     StateManager.getInstance().registerController(this);
 
-    systemLogToggle.selectedProperty().addListener((ov, old_val, new_val) -> {
-      // show system log
-      Logger.getInstance().toggleSystemLog();
-      Logger.getInstance().logSystemMessage(systemLogToggle.getText() + " set to " + new_val);
-    });
+    systemLogToggle
+        .selectedProperty()
+        .addListener(
+            (ov, old_val, new_val) -> {
+              // show system log
+              Logger.getInstance().toggleSystemLog();
+              Logger.getInstance()
+                  .logSystemMessage(systemLogToggle.getText() + " set to " + new_val);
+            });
 
-    tileTextToggle.selectedProperty().addListener((ov, old_val, new_val) -> {
-      StateManager.getInstance().isTileTextEnabled.set(new_val);
-      for (Node n : mapPanel.getChildren()) {
-        if (n instanceof TileComponent) ((TileComponent) n).enableText(new_val);
-      }
-      Logger.getInstance().logSystemMessage(tileTextToggle.getText() + " set to " + new_val);
-    });
+    tileTextToggle
+        .selectedProperty()
+        .addListener(
+            (ov, old_val, new_val) -> {
+              StateManager.getInstance().isTileTextEnabled.set(new_val);
+              for (Node n : mapPanel.getChildren()) {
+                if (n instanceof TileComponent) ((TileComponent) n).enableText(new_val);
+              }
+              Logger.getInstance()
+                  .logSystemMessage(tileTextToggle.getText() + " set to " + new_val);
+            });
 
     tileTextToggle.selectedProperty().set(StateManager.getInstance().isTileTextEnabled.get());
 
     Logger.getInstance().init(textPanel, messagePanel);
 
     mapPanel.prefWidthProperty().bind(root.widthProperty()); // bind width to its parent's width
-    mapPanel.prefHeightProperty().bind(root.heightProperty().multiply(0.85)); // bind height to its parent's height
+    mapPanel
+        .prefHeightProperty()
+        .bind(root.heightProperty().multiply(0.85)); // bind height to its parent's height
     interfacePanel.prefWidthProperty().bind(root.widthProperty());
     interfacePanel.prefHeightProperty().bind(root.heightProperty().multiply(0.15));
-    commandPanel.prefWidthProperty().bind(((HBox) commandPanel.getParent()).widthProperty().multiply(0.5)); // bind width to its parent's width
-    commandPanel.prefHeightProperty().bind(((HBox) commandPanel.getParent()).heightProperty()); // bind height to its parent's height
-    messagePanel.prefWidthProperty().bind(((HBox) commandPanel.getParent()).widthProperty().multiply(0.5)); // bind width to its parent's width
-    messagePanel.prefHeightProperty().bind(((HBox) commandPanel.getParent()).heightProperty()); // bind height to its parent's height
+    commandPanel
+        .prefWidthProperty()
+        .bind(
+            ((HBox) commandPanel.getParent())
+                .widthProperty()
+                .multiply(0.5)); // bind width to its parent's width
+    commandPanel
+        .prefHeightProperty()
+        .bind(
+            ((HBox) commandPanel.getParent())
+                .heightProperty()); // bind height to its parent's height
+    messagePanel
+        .prefWidthProperty()
+        .bind(
+            ((HBox) commandPanel.getParent())
+                .widthProperty()
+                .multiply(0.5)); // bind width to its parent's width
+    messagePanel
+        .prefHeightProperty()
+        .bind(
+            ((HBox) commandPanel.getParent())
+                .heightProperty()); // bind height to its parent's height
 
-    StateManager.getInstance().isInWaypointSelection.addListener((ov, oldVal, newVal) -> {
-      if (newVal) onAddingWaypoint();
-      else doneAddingWaypoint();
-    });
+    StateManager.getInstance()
+        .isInWaypointSelection
+        .addListener(
+            (ov, oldVal, newVal) -> {
+              if (newVal) onAddingWaypoint();
+              else doneAddingWaypoint();
+            });
 
-    root.onMouseClickedProperty().set(event -> {
-      if (StateManager.getInstance().isInWaypointSelection.get() && event.getButton() == MouseButton.SECONDARY) {
-        StateManager.getInstance().isInWaypointSelection.set(false);
-      }
-    });
+    root.onMouseClickedProperty()
+        .set(
+            event -> {
+              if (StateManager.getInstance().isInWaypointSelection.get()
+                  && event.getButton() == MouseButton.SECONDARY) {
+                StateManager.getInstance().isInWaypointSelection.set(false);
+              }
+            });
 
     // sound effect set up
     String musicFile = "resource/BG_music.wav"; // For example
@@ -166,7 +189,16 @@ public class Controller {
     StateManager.getInstance().isInSimulation.set(true);
     Logger.getInstance().logSystemMessage("start simulation");
 
-    ArrayList<MediaPlayer> yellSoundList = new ArrayList<MediaPlayer>(Arrays.asList(yellMusic1Player, yellMusic2Player, yellMusic3Player, yellMusic4Player, null, null, null));
+    ArrayList<MediaPlayer> yellSoundList =
+        new ArrayList<MediaPlayer>(
+            Arrays.asList(
+                yellMusic1Player,
+                yellMusic2Player,
+                yellMusic3Player,
+                yellMusic4Player,
+                null,
+                null,
+                null));
 
     // spawn a agent that follows the current path based on the cost
     // setup animation
@@ -205,11 +237,14 @@ public class Controller {
     SequentialTransition seqT = new SequentialTransition(agent);
     PauseTransition initPause = new PauseTransition(Duration.millis(500));
     seqT.getChildren().add(initPause);
-    initPause.onFinishedProperty().set((status) -> {
-      BGplayer.seek(Duration.ZERO);
-      BGplayer.setCycleCount(10);
-      BGplayer.play();
-    });
+    initPause
+        .onFinishedProperty()
+        .set(
+            (status) -> {
+              BGplayer.seek(Duration.ZERO);
+              BGplayer.setCycleCount(10);
+              BGplayer.play();
+            });
 
     boolean dangerComputationEnabled = StateManager.getInstance().isDangerFactorEnabled.get();
     boolean safePath = true;
@@ -229,11 +264,14 @@ public class Controller {
 
       // set transition sound for metro
       if (t1.type == TileType.Metro && t2.type == TileType.Metro) {
-        translate.statusProperty().addListener((state, oldVal, newVal) -> {
-          if (newVal == Animation.Status.RUNNING) {
-            metroTransPlayer.play();
-          }
-        });
+        translate
+            .statusProperty()
+            .addListener(
+                (state, oldVal, newVal) -> {
+                  if (newVal == Animation.Status.RUNNING) {
+                    metroTransPlayer.play();
+                  }
+                });
       }
 
       // set pause
@@ -250,15 +288,18 @@ public class Controller {
           takeD.setCycleCount(2);
           takeD.setAutoReverse(true);
           // play get hit sound
-          takeD.statusProperty().addListener((status, oldVal, newVal) -> {
-            if (newVal == Animation.Status.RUNNING) {
-              int res = Math.abs(rng.nextInt()) % 7;
-              if (res < 4) {
-                yellSoundList.get(res).seek(Duration.ZERO);
-                yellSoundList.get(res).play();
-              }
-            }
-          });
+          takeD
+              .statusProperty()
+              .addListener(
+                  (status, oldVal, newVal) -> {
+                    if (newVal == Animation.Status.RUNNING) {
+                      int res = Math.abs(rng.nextInt()) % 7;
+                      if (res < 4) {
+                        yellSoundList.get(res).seek(Duration.ZERO);
+                        yellSoundList.get(res).play();
+                      }
+                    }
+                  });
           seqT.getChildren().add(takeD);
         }
 
@@ -272,35 +313,41 @@ public class Controller {
     }
 
     ParallelTransition parT = new ParallelTransition(agent, seqT, rotate);
-    seqT.statusProperty().addListener((state, oldVal, newVal) -> {
-      if (newVal == Animation.Status.STOPPED) {
-        parT.stop();
-        mapPanel.getChildren().remove(agent);
-        StateManager.getInstance().isInSimulation.set(false);
-      }
-    });
+    seqT.statusProperty()
+        .addListener(
+            (state, oldVal, newVal) -> {
+              if (newVal == Animation.Status.STOPPED) {
+                parT.stop();
+                mapPanel.getChildren().remove(agent);
+                StateManager.getInstance().isInSimulation.set(false);
+              }
+            });
 
     if (safePath) {
-      seqT.setOnFinished((val) -> {
-        Logger.getInstance().logMessage("Your agent has reached its destination safely.");
-        //                    arrivePlayer.setVolume(10);
-        arrivePlayer.seek(Duration.ZERO);
-        arrivePlayer.play();
-        BGplayer.stop();
-      });
+      seqT.setOnFinished(
+          (val) -> {
+            Logger.getInstance().logMessage("Your agent has reached its destination safely.");
+            //                    arrivePlayer.setVolume(10);
+            arrivePlayer.seek(Duration.ZERO);
+            arrivePlayer.play();
+            BGplayer.stop();
+          });
     } else {
-      seqT.setOnFinished((val) -> {
-        Logger.getInstance().logMessage("Your agent has died on its way....");
-        deathPlayer.seek(Duration.ZERO);
-        deathPlayer.play();
-      });
+      seqT.setOnFinished(
+          (val) -> {
+            Logger.getInstance().logMessage("Your agent has died on its way....");
+            deathPlayer.seek(Duration.ZERO);
+            deathPlayer.play();
+          });
     }
 
-    seqT.statusProperty().addListener((state, oldVal, newVal) -> {
-      if (newVal == Animation.Status.STOPPED) {
-        BGplayer.stop();
-      }
-    });
+    seqT.statusProperty()
+        .addListener(
+            (state, oldVal, newVal) -> {
+              if (newVal == Animation.Status.STOPPED) {
+                BGplayer.stop();
+              }
+            });
     // playing the transition
     animationCache.add(parT);
 
@@ -346,26 +393,46 @@ public class Controller {
 
   public void drawMap1() {
     /*Map 1*/
-    char[][] map = {{'s', 'p', 'p'}, {'d', 'm', 'd'}, {'p', 'p', 'e'},};
+    char[][] map = {
+      {'s', 'p', 'p'}, {'d', 'm', 'd'}, {'p', 'p', 'e'},
+    };
 
     drawMap(map);
   }
 
   public void drawMap2() {
     /*Map 2*/
-    char[][] map = {{'s', 'd', 'd', 'p', 'm'}, {'d', 'd', 'm', 'p', 'm'}, {'d', 'p', 'd', 'd', 'm'}, {'p', 'd', 'p', 'd', 'p'}, {'d', 'p', 'p', 'p', 'e'},};
+    char[][] map = {
+      {'s', 'd', 'd', 'p', 'm'},
+      {'d', 'd', 'm', 'p', 'm'},
+      {'d', 'p', 'd', 'd', 'm'},
+      {'p', 'd', 'p', 'd', 'p'},
+      {'d', 'p', 'p', 'p', 'e'},
+    };
     drawMap(map);
   }
 
   public void drawMap3() {
     /*Map 2*/
-    char[][] map = {{'s', 'd', 'd', 'M', 'd'}, {'d', 'd', 'm', 'p', 'p'}, {'p', 'm', 'd', 'd', 'p'}, {'m', 'M', 'p', 'd', 'd'}, {'p', 'd', 'p', 'p', 'e'},};
+    char[][] map = {
+      {'s', 'd', 'd', 'M', 'd'},
+      {'d', 'd', 'm', 'p', 'p'},
+      {'p', 'm', 'd', 'd', 'p'},
+      {'m', 'M', 'p', 'd', 'd'},
+      {'p', 'd', 'p', 'p', 'e'},
+    };
     drawMap(map);
   }
 
   public void drawMap4() {
     /*Map 2*/
-    char[][] map = {{'p', 'p', 'r', 'r', 'x', 'x', 'x', 'x', 'x'}, {'f', 's', 'r', 'r', 'd', 'd', 'p', 'p', 'p'}, {'d', 'p', 'p', 'x', 'x', 'p', 'x', 'd', 'r'}, {'d', 'd', 'p', 'p', 'p', 'r', 'r', 'd', 'p'}, {'f', 'd', 'p', 'x', 'x', 'r', 'x', 'r', 'e'},};
+    char[][] map = {
+      {'p', 'p', 'r', 'r', 'x', 'x', 'x', 'x', 'x'},
+      {'f', 's', 'r', 'r', 'd', 'd', 'p', 'p', 'p'},
+      {'d', 'p', 'p', 'x', 'x', 'p', 'x', 'd', 'r'},
+      {'d', 'd', 'p', 'p', 'p', 'r', 'r', 'd', 'p'},
+      {'f', 'd', 'p', 'x', 'x', 'r', 'x', 'r', 'e'},
+    };
     drawMap(map);
   }
 
@@ -453,7 +520,9 @@ public class Controller {
 
     // main logic for calling pathfinding algorithm
     ArrayList<Tile> path;
-    PathFindingService pf = new SafestShortestPath(StateManager.getInstance().getCurrentMap(), Integer.parseInt(healthInput.getText()));
+    PathFindingService pf =
+        new SafestShortestPath(
+            StateManager.getInstance().getCurrentMap(), Integer.parseInt(healthInput.getText()));
 
     LinkedList<Tile> waypoints = StateManager.getInstance().currentWaypoints;
     path = pf.findPath(StateManager.getInstance().getCurrentMap(), waypoints);
@@ -472,7 +541,12 @@ public class Controller {
         // draw a link between two tiles
         Tile t1 = path.get(i);
         Tile t2 = path.get(i + 1);
-        Line l = new Line(t1.getTranslateX() + offset, t1.getTranslateY() + offset, t2.getTranslateX() + offset, t2.getTranslateY() + offset);
+        Line l =
+            new Line(
+                t1.getTranslateX() + offset,
+                t1.getTranslateY() + offset,
+                t2.getTranslateX() + offset,
+                t2.getTranslateY() + offset);
         l.getStyleClass().add("pathline");
         mapPanel.getChildren().add(l);
         lineCache.add(l);
@@ -577,7 +651,8 @@ public class Controller {
             tile = new MountainTile();
         }
 
-        tile.initComponent(midX + i * tileSize, midY + j * tileSize, tileSize - stroke, tileSize - stroke);
+        tile.initComponent(
+            midX + i * tileSize, midY + j * tileSize, tileSize - stroke, tileSize - stroke);
         tile.setNodeID(number);
         tile.graphCoord(x, y);
         number += 1;
@@ -602,7 +677,8 @@ public class Controller {
         for (int j = 0; j < metroNeighbours.size(); j++) {
           if (metroNeighbours.get(j) != tile) {
             ((MetroTile) tile).fixMetro(metroNeighbours.get(j));
-            if (((MetroTile) tile).metroTimeCost < 100 && ((MetroTile) tile).metroDistanceCost < 100) {
+            if (((MetroTile) tile).metroTimeCost < 100
+                && ((MetroTile) tile).metroDistanceCost < 100) {
               tile.addNeighbor(metroNeighbours.get(j));
             }
           }
@@ -630,7 +706,8 @@ public class Controller {
         diffy = -100;
       }
 
-      TranslateTransition moveAnim = new TranslateTransition(Duration.millis(rng.nextDouble() * 500 + 500), n);
+      TranslateTransition moveAnim =
+          new TranslateTransition(Duration.millis(rng.nextDouble() * 500 + 500), n);
       moveAnim.setFromX(xc + diffx * 10);
       moveAnim.setFromY(yc + diffy * 10);
       moveAnim.setToX(xc);
@@ -640,10 +717,13 @@ public class Controller {
       entryAnimation.getChildren().add(moveAnim);
     }
     entryAnimation.play();
-    entryAnimation.statusProperty().addListener((state, oldVal, newVal) -> {
-      if (newVal == Animation.Status.STOPPED) {
-        StateManager.getInstance().isMapInitialized.set(true);
-      }
-    });
+    entryAnimation
+        .statusProperty()
+        .addListener(
+            (state, oldVal, newVal) -> {
+              if (newVal == Animation.Status.STOPPED) {
+                StateManager.getInstance().isMapInitialized.set(true);
+              }
+            });
   }
 }
